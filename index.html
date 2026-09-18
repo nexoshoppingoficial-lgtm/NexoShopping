@@ -308,7 +308,7 @@
 
 <script>
 // PEGA AQUÍ EL ENLACE CSV DE TU GOOGLE SHEETS PUBLICADO EN LA WEB
-const URL_SHEETS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR3MrnF2ljSQja7InTGoRPtg-SpCFpsExOBVzGv9ZdLZsDNxhw6_PfTG1ZTgfB_JntJEgsqyoZ023a0/pub?gid=0&single=true&output=csv";
+const URL_SHEETS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSXXXXXXXXXXXXX/pub?output=csv";
 
 const CLAVE_CARRITO = "carrito_global_tienda";
 const TELEFONO_WA = "573212295023";
@@ -316,6 +316,10 @@ const META_ENVIO = 120000;
 
 let productosBase = [];
 let productoSeleccionado = null;
+
+// Obtener la categoría desde la URL si existe (Ej: ?categoria=LABIAL)
+const urlParams = new URLSearchParams(window.location.search);
+const filtroCategoria = urlParams.get('categoria');
 
 async function cargarProductosDesdeSheets() {
     try {
@@ -348,6 +352,7 @@ function csvAObjetos(csvText) {
         obj.precio = parseInt(obj.precio.replace(/\D/g, "")) || 0;
         obj.imagenesArr = obj.imagenes ? obj.imagenes.split(",").map(img => img.trim()) : [];
         obj.tonosArr = obj.tonos ? obj.tonos.split(",").map(t => t.trim()) : [];
+        obj.categoria = obj.categoria || "";
         lista.push(obj);
     }
     return lista;
@@ -373,13 +378,20 @@ function parseCSVLine(text) {
 
 function renderizarCatalogo() {
     const contenedor = document.getElementById("appCatalogo");
-    if (productosBase.length === 0) {
-        contenedor.innerHTML = '<div class="cargando-txt">No hay productos registrados.</div>';
+    
+    // Aplicar filtro por categoría si está definido en la URL
+    let productosAMostrar = productosBase;
+    if (filtroCategoria) {
+        productosAMostrar = productosBase.filter(p => p.categoria.trim().toUpperCase() === filtroCategoria.trim().toUpperCase());
+    }
+
+    if (productosAMostrar.length === 0) {
+        contenedor.innerHTML = '<div class="cargando-txt">No hay productos disponibles en esta categoría.</div>';
         return;
     }
 
     let html = "";
-    productosBase.forEach(prod => {
+    productosAMostrar.forEach(prod => {
         const imgPrincipal = prod.imagenesArr[0] || "";
         const imgSecundaria = prod.imagenesArr[1] || imgPrincipal;
         
