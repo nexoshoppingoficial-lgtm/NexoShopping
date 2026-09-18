@@ -88,6 +88,7 @@
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(2px); z-index: 99999;
             align-items: center; justify-content: center; padding: 15px;
+            touch-action: pan-y;
         }
 
         .modal-content {
@@ -101,6 +102,7 @@
         .carrusel-container {
             width: 100%; aspect-ratio: 1 / 1; max-height: 380px; display: flex; overflow-x: auto;
             scroll-snap-type: x mandatory; gap: 8px; border-radius: 4px; background: #fdfbf7; outline: none; scroll-behavior: smooth;
+            touch-action: pan-x pan-y;
         }
 
         .carrusel-container img {
@@ -133,7 +135,7 @@
 
         .lightbox-viewport img {
             max-width: 90vw; max-height: 85vh; object-fit: contain; transform-origin: center center;
-            will-change: transform; transition: transform 0.08s ease-out; pointer-events: none;
+            will-change: transform; transition: transform 0.08s ease-out; pointer-events: auto; cursor: grab;
         }
 
         .lightbox-cerrar {
@@ -257,7 +259,7 @@
 
         <div class="envio-box">
             <svg class="truck-icon" viewBox="0 0 24 24">
-                <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-7.5l1.96 2.5H17V11h2.5zm-1 7.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5-1.5zm13.5-7.5l1.96 2.5H17V11h2.5zm-1 7.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5-1.5z"/>
             </svg>
             <div><strong>ENVÍO GRATIS</strong> en compras superiores a <strong>$120.000</strong>. Envíos a toda Colombia.</div>
         </div>
@@ -278,7 +280,7 @@
 </div>
 
 <div class="modal-carrito-overlay" id="modalCarrito">
-    <div class="carrito-container">
+    <div class="carrito-container" id="carritoContainer">
         <button type="button" class="btn-cerrar-cart" onclick="cerrarCarrito()">✕</button>
         
         <div class="header-carrito">
@@ -379,7 +381,6 @@ function parseCSVLine(text) {
 function renderizarCatalogo() {
     const contenedor = document.getElementById("appCatalogo");
     
-    // Aplicar filtro por categoría si está definido en la URL
     let productosAMostrar = productosBase;
     if (filtroCategoria) {
         productosAMostrar = productosBase.filter(p => p.categoria.trim().toUpperCase() === filtroCategoria.trim().toUpperCase());
@@ -526,14 +527,69 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
+/* =========================================================
+   INTEGRACIÓN Y MEJORAS DE GESTOS TÁCTILES (MOBILE)
+   ========================================================= */
+
+// --- 1. GESTOS DE DESLIZAR HACIA LA DERECHA (SWIPE RIGHT TO CLOSE) ---
+function agregarSwipeParaCerrar(elemento, callbackCerrar, esCarrusel = false) {
+    let startX = 0, startY = 0, deltaX = 0, deltaY = 0;
+
+    elemento.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+            deltaX = 0;
+            deltaY = 0;
+        }
+    }, { passive: true });
+
+    elemento.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 1) {
+            deltaX = e.touches[0].clientX - startX;
+            deltaY = e.touches[0].clientY - startY;
+        }
+    }, { passive: true });
+
+    elemento.addEventListener('touchend', () => {
+        // Deslizar horizontal a la derecha con mayor desplazamiento en X que Y
+        if (deltaX > 70 && Math.abs(deltaY) < 50) {
+            if (esCarrusel) {
+                // Si está en el carrusel, solo cerrar si está en la primera imagen (scrollLeft === 0)
+                if (elemento.scrollLeft <= 5) {
+                    callbackCerrar();
+                }
+            } else {
+                callbackCerrar();
+            }
+        }
+    });
+}
+
+// Aplicar Swipe a Modales
+agregarSwipeParaCerrar(document.getElementById("carritoContainer"), cerrarCarrito);
+agregarSwipeParaCerrar(document.getElementById("modalContent"), cerrarModal);
+agregarSwipeParaCerrar(document.getElementById("carruselImagenes"), cerrarModal, true);
+
+
+// --- 2. ZOOM INTERACTIVO EN LIGHTBOX (TAP, PINCH, PAN & SWIPE) ---
 let scale = 1;
 let pointX = 0, pointY = 0;
-let isTouching = false;
+let initialPinchDist = 0;
+let initialScale = 1;
+let isDragging = false;
+let startPanX = 0, startPanY = 0;
+let lightboxStartX = 0, lightboxStartY = 0;
+
 const viewport = document.getElementById("zoomViewport");
 const imgTarget = document.getElementById("imgZoomTarget");
 
 function updateTransform() {
-    if (scale < 1) { scale = 1; pointX = 0; pointY = 0; }
+    if (scale <= 1) { 
+        scale = 1; 
+        pointX = 0; 
+        pointY = 0; 
+    }
     imgTarget.style.transform = `translate3d(${pointX}px, ${pointY}px, 0px) scale(${scale})`;
 }
 
@@ -545,6 +601,71 @@ function abrirZoom(urlImagen) {
 }
 
 function cerrarZoom() { document.getElementById("lightboxZoom").style.display = "none"; }
+
+// Obtener distancia entre 2 dedos (Pinch)
+function getPinchDistance(touches) {
+    return Math.hypot(
+        touches[0].clientX - touches[1].clientX,
+        touches[0].clientY - touches[1].clientY
+    );
+}
+
+viewport.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 1) {
+        lightboxStartX = e.touches[0].clientX;
+        lightboxStartY = e.touches[0].clientY;
+        if (scale > 1) {
+            isDragging = true;
+            startPanX = e.touches[0].clientX - pointX;
+            startPanY = e.touches[0].clientY - pointY;
+        }
+    } else if (e.touches.length === 2) {
+        isDragging = false;
+        initialPinchDist = getPinchDistance(e.touches);
+        initialScale = scale;
+    }
+}, { passive: true });
+
+viewport.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 1 && isDragging && scale > 1) {
+        pointX = e.touches[0].clientX - startPanX;
+        pointY = e.touches[0].clientY - startPanY;
+        updateTransform();
+    } else if (e.touches.length === 2) {
+        const currentDist = getPinchDistance(e.touches);
+        if (initialPinchDist > 0) {
+            scale = Math.min(Math.max(initialScale * (currentDist / initialPinchDist), 1), 4);
+            updateTransform();
+        }
+    }
+}, { passive: true });
+
+viewport.addEventListener('touchend', (e) => {
+    isDragging = false;
+    if (e.touches.length === 0) {
+        // Swipe to close lightbox cuando no tiene zoom (scale = 1)
+        if (scale === 1 && e.changedTouches.length === 1) {
+            const diffX = e.changedTouches[0].clientX - lightboxStartX;
+            const diffY = e.changedTouches[0].clientY - lightboxStartY;
+            if (diffX > 70 && Math.abs(diffY) < 50) {
+                cerrarZoom();
+            }
+        }
+    }
+});
+
+// Toque único para ampliar o restaurar el zoom (Tap Zoom)
+imgTarget.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (scale > 1) {
+        scale = 1; pointX = 0; pointY = 0;
+    } else {
+        scale = 2.5; pointX = 0; pointY = 0;
+    }
+    updateTransform();
+});
+
+// --- FIN FUNCIONES TÁCTILES ---
 
 function cambiarCant(d) {
     const el = document.getElementById("inpCant");
