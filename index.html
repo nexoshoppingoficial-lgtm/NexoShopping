@@ -3,102 +3,212 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <title>Tienda Dinámica - Catálogo</title>
+  <title>Producto y Carrito Atenea Makeup</title>
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      padding: 10px;
+      padding: 0;
       font-family: 'Lato', sans-serif;
       background-color: transparent;
-      color: #333;
+      color: #000000;
     }
-    
-    .catalog-container {
+
+    .catalog-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 15px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 10px;
       max-width: 1200px;
       margin: 0 auto;
     }
 
-    .product-card {
-      background: #ffffff;
-      border: 1px solid #eee;
-      border-radius: 8px;
-      padding: 10px;
-      text-align: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
+    @media (min-width: 768px) {
+      .catalog-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        padding: 20px;
+      }
     }
 
-    .product-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-
-    .product-card img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
+    .card {
+      background: #FDFBF7;
+      border: 1px solid #EAE3D9;
       border-radius: 4px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .card img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin: 10px 0 4px 0;
+      color: #000;
+      min-height: 28px;
+      line-height: 1.3;
+    }
+
+    .card-price {
+      font-size: 12px;
+      font-weight: 400;
+      color: #333;
       margin-bottom: 8px;
     }
 
-    .product-title {
-      font-size: 0.85rem;
-      font-weight: 700;
-      margin: 5px 0;
-      text-transform: uppercase;
-      color: #222;
-      height: 32px;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-    }
-
-    .product-price {
-      font-size: 0.95rem;
-      font-weight: 700;
+    .btn-detail {
+      background: #F4EBE1;
       color: #000;
-      margin: 5px 0 8px 0;
-    }
-
-    .btn-add {
-      background: #000;
-      color: #fff;
-      border: none;
-      padding: 6px 12px;
-      font-size: 0.75rem;
-      border-radius: 4px;
+      border: 1px solid #D8C8B8;
+      padding: 8px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
       cursor: pointer;
       width: 100%;
+      border-radius: 2px;
+      transition: background 0.2s;
+    }
+
+    .btn-detail:hover {
+      background: #E8DCCF;
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+
+    .modal-content {
+      background: #FDFBF7;
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 4px;
+      padding: 20px;
+      position: relative;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 20px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: #000;
+    }
+
+    .modal-img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 2px;
+      margin-bottom: 15px;
+    }
+
+    .modal-title {
+      font-size: 14px;
+      font-weight: 700;
       text-transform: uppercase;
-      font-weight: bold;
+      margin: 0 0 5px 0;
     }
 
-    .btn-add:hover {
-      background: #333;
+    .modal-price {
+      font-size: 14px;
+      font-weight: 400;
+      color: #333;
+      margin-bottom: 10px;
     }
 
-    /* Floating Cart Icon */
+    .modal-desc {
+      font-size: 12px;
+      color: #555;
+      line-height: 1.4;
+      margin-bottom: 15px;
+    }
+
+    .tone-selector {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin: 10px 0 20px 0;
+    }
+
+    .tone-btn {
+      border: 1px solid #D8C8B8;
+      background: #FFF;
+      padding: 6px 10px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+
+    .tone-btn.selected {
+      border-color: #000;
+      background: #000;
+      color: #FFF;
+    }
+
+    .btn-add-cart {
+      background: #000;
+      color: #FFF;
+      border: none;
+      padding: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      width: 100%;
+      border-radius: 2px;
+    }
+
+    /* Cart Button & Drawer */
     .cart-float-btn {
       position: fixed;
       bottom: 20px;
       right: 20px;
       background: #000;
-      color: #fff;
+      color: #FFF;
       border: none;
       border-radius: 50%;
-      width: 55px;
-      height: 55px;
-      font-size: 1.4rem;
+      width: 50px;
+      height: 50px;
+      font-size: 18px;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-      z-index: 99;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 9998;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -108,100 +218,29 @@
       position: absolute;
       top: -2px;
       right: -2px;
-      background: #e74c3c;
-      color: white;
-      font-size: 0.75rem;
+      background: #C59B27;
+      color: #FFF;
+      font-size: 10px;
       font-weight: bold;
       border-radius: 50%;
       padding: 2px 6px;
-    }
-
-    /* Modal Styling */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-      padding: 15px;
-    }
-
-    .modal-content {
-      background: #fff;
-      width: 100%;
-      max-width: 500px;
-      max-height: 90vh;
-      overflow-y: auto;
-      border-radius: 8px;
-      padding: 20px;
-      position: relative;
-    }
-
-    .close-modal {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 1.5rem;
-      cursor: pointer;
-      background: none;
-      border: none;
-    }
-
-    .modal-img {
-      width: 100%;
-      height: 250px;
-      object-fit: cover;
-      border-radius: 6px;
-      margin-bottom: 10px;
-    }
-
-    .tone-selector {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin: 10px 0 15px 0;
-    }
-
-    .tone-btn {
-      border: 1px solid #ccc;
-      background: #f8f8f8;
-      padding: 6px 12px;
-      font-size: 0.8rem;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .tone-btn.selected {
-      border-color: #000;
-      background: #000;
-      color: #fff;
-    }
-
-    /* Cart Drawer */
-    .cart-modal-content {
-      background: #fff;
-      width: 100%;
-      max-width: 450px;
-      border-radius: 8px;
-      padding: 20px;
     }
 
     .cart-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid #EAE3D9;
       padding: 10px 0;
+      font-size: 12px;
     }
 
-    .cart-total {
-      font-size: 1.1rem;
+    .qty-btn {
+      background: #F4EBE1;
+      border: 1px solid #D8C8B8;
+      padding: 2px 8px;
+      cursor: pointer;
       font-weight: bold;
-      margin-top: 15px;
-      text-align: right;
     }
 
     .btn-checkout {
@@ -210,23 +249,27 @@
       border: none;
       width: 100%;
       padding: 12px;
-      font-size: 1rem;
+      font-size: 12px;
       font-weight: bold;
-      border-radius: 50px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-radius: 2px;
       margin-top: 15px;
       cursor: pointer;
     }
 
     .empty-msg {
       text-align: center;
-      color: #888;
-      padding: 30px 0;
+      color: #777;
+      padding: 40px 0;
+      font-size: 12px;
+      grid-column: 1 / -1;
     }
   </style>
 </head>
 <body>
 
-  <div class="catalog-container" id="catalog">
+  <div class="catalog-grid" id="catalog">
     <div class="empty-msg">Cargando productos...</div>
   </div>
 
@@ -234,40 +277,40 @@
     🛒 <span class="cart-count" id="cartCount">0</span>
   </button>
 
-  <!-- Modal Detalle Producto -->
+  <!-- Modal Detalle -->
   <div class="modal-overlay" id="productModal">
     <div class="modal-content">
       <button class="close-modal" onclick="closeProductModal()">&times;</button>
       <img id="mImg" class="modal-img" src="" alt="Producto">
-      <h2 id="mTitle" style="margin: 5px 0; font-size: 1.2rem;"></h2>
-      <p id="mPrice" style="font-weight: bold; font-size: 1.1rem; color: #000;"></p>
-      <p id="mDesc" style="font-size: 0.9rem; color: #555;"></p>
+      <div id="mTitle" class="modal-title"></div>
+      <div id="mPrice" class="modal-price"></div>
+      <div id="mDesc" class="modal-desc"></div>
       
       <div id="toneContainer" style="display:none;">
-        <label style="font-size: 0.85rem; font-weight: bold;">Selecciona Tono/Variedad:</label>
+        <label style="font-size: 10px; font-weight: bold; text-transform: uppercase;">Selecciona Tono:</label>
         <div class="tone-selector" id="mTones"></div>
       </div>
 
-      <button class="btn-add" style="padding: 12px; font-size: 0.9rem;" onclick="addToCartFromModal()">Añadir al Carrito</button>
+      <button class="btn-add-cart" onclick="addToCartFromModal()">Añadir al Carrito</button>
     </div>
   </div>
 
   <!-- Modal Carrito -->
   <div class="modal-overlay" id="cartModal">
-    <div class="cart-modal-content">
+    <div class="modal-content">
       <button class="close-modal" onclick="closeCartModal()">&times;</button>
-      <h3>Tu Carrito de Compras</h3>
+      <h3 style="font-size: 14px; text-transform: uppercase; margin-top:0;">Tu Carrito</h3>
       <div id="cartItems"></div>
-      <div class="cart-total" id="cartTotal">Total: $0</div>
+      <div style="font-size: 13px; font-weight: bold; text-align: right; margin-top: 15px;" id="cartTotal">Total: $0</div>
       <button class="btn-checkout" onclick="sendWhatsAppOrder()">Pedir por WhatsApp 💬</button>
     </div>
   </div>
 
   <script>
     // PEGA AQUÍ TU ENLACE CSV PUBLICADO DE GOOGLE SHEETS
-    const URL_SHEETS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR3MrnF2ljSQja7InTGoRPtg-SpCFpsExOBVzGv9ZdLZsDNxhw6_PfTG1ZTgfB_JntJEgsqyoZ023a0/pub?gid=0&single=true&output=csv";
+    const URL_SHEETS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSXXXXXXXXXXXXX/pub?output=csv";
 
-    // Número de WhatsApp para recibir pedidos (sin espacios ni signo +)
+    // Tu número de WhatsApp sin espacios ni signos
     const NUMERO_WHATSAPP = "573000000000"; 
 
     let allProducts = [];
@@ -275,7 +318,6 @@
     let selectedTone = "";
     let cart = JSON.parse(localStorage.getItem('nexoCart')) || [];
 
-    // Obtener parámetro 'categoria' de la URL
     const urlParams = new URLSearchParams(window.location.search);
     const filterCategory = urlParams.get('categoria');
 
@@ -287,7 +329,7 @@
         renderCatalog();
         updateCartCount();
       } catch (err) {
-        document.getElementById('catalog').innerHTML = '<div class="empty-msg">Error cargando catálogo. Revisa la URL del CSV.</div>';
+        document.getElementById('catalog').innerHTML = '<div class="empty-msg">Error al cargar productos. Por favor verifica la URL del CSV.</div>';
       }
     }
 
@@ -345,20 +387,22 @@
       let filtered = allProducts;
 
       if (filterCategory) {
-        filtered = allProducts.filter(p => p.categoria.toUpperCase() === filterCategory.toUpperCase());
+        filtered = allProducts.filter(p => p.categoria.trim().toUpperCase() === filterCategory.trim().toUpperCase());
       }
 
       if (filtered.length === 0) {
-        catalog.innerHTML = '<div class="empty-msg">No hay productos en esta categoría.</div>';
+        catalog.innerHTML = '<div class="empty-msg">No hay productos disponibles en esta categoría.</div>';
         return;
       }
 
       catalog.innerHTML = filtered.map(p => `
-        <div class="product-card" onclick="openProductModal('${p.id}')">
-          <img src="${p.imagenes[0] || 'https://via.placeholder.com/150'}" alt="${p.nombre}">
-          <div class="product-title">${p.nombre}</div>
-          <div class="product-price">$${p.precio.toLocaleString('es-CO')}</div>
-          <button class="btn-add" onclick="event.stopPropagation(); openProductModal('${p.id}')">Ver Detalle</button>
+        <div class="card" onclick="openProductModal('${p.id}')">
+          <div>
+            <img src="${p.imagenes[0] || 'https://via.placeholder.com/200'}" alt="${p.nombre}">
+            <div class="card-title">${p.nombre}</div>
+            <div class="card-price">$${p.precio.toLocaleString('es-CO')}</div>
+          </div>
+          <button class="btn-detail" onclick="event.stopPropagation(); openProductModal('${p.id}')">Ver Detalle</button>
         </div>
       `).join('');
     }
@@ -448,12 +492,12 @@
             <div class="cart-item">
               <div>
                 <strong>${item.nombre}</strong> ${item.tono ? `<small>(${item.tono})</small>` : ''}<br>
-                <small>$${item.precio.toLocaleString('es-CO')} x ${item.qty}</small>
+                <span>$${item.precio.toLocaleString('es-CO')} x ${item.qty}</span>
               </div>
               <div>
-                <button onclick="changeQty(${idx}, -1)">-</button>
-                <span>${item.qty}</span>
-                <button onclick="changeQty(${idx}, 1)">+</button>
+                <button class="qty-btn" onclick="changeQty(${idx}, -1)">-</button>
+                <span style="margin: 0 5px;">${item.qty}</span>
+                <button class="qty-btn" onclick="changeQty(${idx}, 1)">+</button>
               </div>
             </div>
           `;
