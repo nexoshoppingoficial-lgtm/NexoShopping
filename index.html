@@ -135,7 +135,7 @@
 
         .lightbox-viewport img {
             max-width: 90vw; max-height: 85vh; object-fit: contain; transform-origin: center center;
-            will-change: transform; transition: transform 0.08s ease-out; pointer-events: auto; cursor: grab;
+            will-change: transform; transition: transform 0.08s ease-out; pointer-events: auto; cursor: zoom-in;
         }
 
         .lightbox-cerrar {
@@ -156,6 +156,7 @@
         .carrito-container { 
             width: 100%; max-width: 440px; background: #faf6f0; border: 1px solid #f0e6d8; border-radius: 6px;
             padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.12); position: relative; max-height: 85vh; overflow-y: auto;
+            touch-action: pan-y;
         }
 
         .header-carrito { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid #e3d7cb; padding-bottom: 10px; }
@@ -259,7 +260,7 @@
 
         <div class="envio-box">
             <svg class="truck-icon" viewBox="0 0 24 24">
-                <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5-1.5zm13.5-7.5l1.96 2.5H17V11h2.5zm-1 7.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5-1.5z"/>
+                <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-7.5l1.96 2.5H17V11h2.5zm-1 7.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
             </svg>
             <div><strong>ENVÍO GRATIS</strong> en compras superiores a <strong>$120.000</strong>. Envíos a toda Colombia.</div>
         </div>
@@ -309,7 +310,6 @@
 </div>
 
 <script>
-// PEGA AQUÍ EL ENLACE CSV DE TU GOOGLE SHEETS PUBLICADO EN LA WEB
 const URL_SHEETS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR3MrnF2ljSQja7InTGoRPtg-SpCFpsExOBVzGv9ZdLZsDNxhw6_PfTG1ZTgfB_JntJEgsqyoZ023a0/pub?gid=0&single=true&output=csv";
 
 const CLAVE_CARRITO = "carrito_global_tienda";
@@ -319,7 +319,6 @@ const META_ENVIO = 120000;
 let productosBase = [];
 let productoSeleccionado = null;
 
-// Obtener la categoría desde la URL si existe (Ej: ?categoria=LABIAL)
 const urlParams = new URLSearchParams(window.location.search);
 const filtroCategoria = urlParams.get('categoria');
 
@@ -527,146 +526,6 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
-/* =========================================================
-   INTEGRACIÓN Y MEJORAS DE GESTOS TÁCTILES (MOBILE)
-   ========================================================= */
-
-// --- 1. GESTOS DE DESLIZAR HACIA LA DERECHA (SWIPE RIGHT TO CLOSE) ---
-function agregarSwipeParaCerrar(elemento, callbackCerrar, esCarrusel = false) {
-    let startX = 0, startY = 0, deltaX = 0, deltaY = 0;
-
-    elemento.addEventListener('touchstart', (e) => {
-        if (e.touches.length === 1) {
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
-            deltaX = 0;
-            deltaY = 0;
-        }
-    }, { passive: true });
-
-    elemento.addEventListener('touchmove', (e) => {
-        if (e.touches.length === 1) {
-            deltaX = e.touches[0].clientX - startX;
-            deltaY = e.touches[0].clientY - startY;
-        }
-    }, { passive: true });
-
-    elemento.addEventListener('touchend', () => {
-        // Deslizar horizontal a la derecha con mayor desplazamiento en X que Y
-        if (deltaX > 70 && Math.abs(deltaY) < 50) {
-            if (esCarrusel) {
-                // Si está en el carrusel, solo cerrar si está en la primera imagen (scrollLeft === 0)
-                if (elemento.scrollLeft <= 5) {
-                    callbackCerrar();
-                }
-            } else {
-                callbackCerrar();
-            }
-        }
-    });
-}
-
-// Aplicar Swipe a Modales
-agregarSwipeParaCerrar(document.getElementById("carritoContainer"), cerrarCarrito);
-agregarSwipeParaCerrar(document.getElementById("modalContent"), cerrarModal);
-agregarSwipeParaCerrar(document.getElementById("carruselImagenes"), cerrarModal, true);
-
-
-// --- 2. ZOOM INTERACTIVO EN LIGHTBOX (TAP, PINCH, PAN & SWIPE) ---
-let scale = 1;
-let pointX = 0, pointY = 0;
-let initialPinchDist = 0;
-let initialScale = 1;
-let isDragging = false;
-let startPanX = 0, startPanY = 0;
-let lightboxStartX = 0, lightboxStartY = 0;
-
-const viewport = document.getElementById("zoomViewport");
-const imgTarget = document.getElementById("imgZoomTarget");
-
-function updateTransform() {
-    if (scale <= 1) { 
-        scale = 1; 
-        pointX = 0; 
-        pointY = 0; 
-    }
-    imgTarget.style.transform = `translate3d(${pointX}px, ${pointY}px, 0px) scale(${scale})`;
-}
-
-function abrirZoom(urlImagen) {
-    imgTarget.src = urlImagen;
-    scale = 1; pointX = 0; pointY = 0;
-    updateTransform();
-    document.getElementById("lightboxZoom").style.display = "block";
-}
-
-function cerrarZoom() { document.getElementById("lightboxZoom").style.display = "none"; }
-
-// Obtener distancia entre 2 dedos (Pinch)
-function getPinchDistance(touches) {
-    return Math.hypot(
-        touches[0].clientX - touches[1].clientX,
-        touches[0].clientY - touches[1].clientY
-    );
-}
-
-viewport.addEventListener('touchstart', (e) => {
-    if (e.touches.length === 1) {
-        lightboxStartX = e.touches[0].clientX;
-        lightboxStartY = e.touches[0].clientY;
-        if (scale > 1) {
-            isDragging = true;
-            startPanX = e.touches[0].clientX - pointX;
-            startPanY = e.touches[0].clientY - pointY;
-        }
-    } else if (e.touches.length === 2) {
-        isDragging = false;
-        initialPinchDist = getPinchDistance(e.touches);
-        initialScale = scale;
-    }
-}, { passive: true });
-
-viewport.addEventListener('touchmove', (e) => {
-    if (e.touches.length === 1 && isDragging && scale > 1) {
-        pointX = e.touches[0].clientX - startPanX;
-        pointY = e.touches[0].clientY - startPanY;
-        updateTransform();
-    } else if (e.touches.length === 2) {
-        const currentDist = getPinchDistance(e.touches);
-        if (initialPinchDist > 0) {
-            scale = Math.min(Math.max(initialScale * (currentDist / initialPinchDist), 1), 4);
-            updateTransform();
-        }
-    }
-}, { passive: true });
-
-viewport.addEventListener('touchend', (e) => {
-    isDragging = false;
-    if (e.touches.length === 0) {
-        // Swipe to close lightbox cuando no tiene zoom (scale = 1)
-        if (scale === 1 && e.changedTouches.length === 1) {
-            const diffX = e.changedTouches[0].clientX - lightboxStartX;
-            const diffY = e.changedTouches[0].clientY - lightboxStartY;
-            if (diffX > 70 && Math.abs(diffY) < 50) {
-                cerrarZoom();
-            }
-        }
-    }
-});
-
-// Toque único para ampliar o restaurar el zoom (Tap Zoom)
-imgTarget.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (scale > 1) {
-        scale = 1; pointX = 0; pointY = 0;
-    } else {
-        scale = 2.5; pointX = 0; pointY = 0;
-    }
-    updateTransform();
-});
-
-// --- FIN FUNCIONES TÁCTILES ---
-
 function cambiarCant(d) {
     const el = document.getElementById("inpCant");
     let v = +el.value + d;
@@ -775,6 +634,172 @@ function enviarPedido() {
     cargarCarrito();
     cerrarCarrito();
 }
+
+/* ==========================================================================
+   SECCIÓN DE INTERACCIÓN Y GESTOS TÁCTILES PARA CELULARES (EXCLUSIVA MÓVIL)
+   ========================================================================== */
+
+// 1. DESLIZAR A LA DERECHA PARA CERRAR EL CARRITO
+let touchStartXCart = 0;
+let touchStartYCart = 0;
+const modalCarrito = document.getElementById("modalCarrito");
+
+modalCarrito.addEventListener("touchstart", (e) => {
+    touchStartXCart = e.touches[0].clientX;
+    touchStartYCart = e.touches[0].clientY;
+}, { passive: true });
+
+modalCarrito.addEventListener("touchend", (e) => {
+    const deltaX = e.changedTouches[0].clientX - touchStartXCart;
+    const deltaY = e.changedTouches[0].clientY - touchStartYCart;
+    if (deltaX > 70 && Math.abs(deltaY) < 60) {
+        cerrarCarrito();
+    }
+}, { passive: true });
+
+// 2. DESLIZAR A LA DERECHA DESDE LA PRIMERA IMAGEN EN CARRUSEL PARA CERRAR MODAL PRODUCTO
+let touchStartXCarrusel = 0;
+let touchStartYCarrusel = 0;
+
+carrusel.addEventListener("touchstart", (e) => {
+    touchStartXCarrusel = e.touches[0].clientX;
+    touchStartYCarrusel = e.touches[0].clientY;
+}, { passive: true });
+
+carrusel.addEventListener("touchend", (e) => {
+    const deltaX = e.changedTouches[0].clientX - touchStartXCarrusel;
+    const deltaY = e.changedTouches[0].clientY - touchStartYCarrusel;
+    if (carrusel.scrollLeft <= 5 && deltaX > 60 && Math.abs(deltaY) < 50) {
+        cerrarModal();
+    }
+}, { passive: true });
+
+// DESLIZAR TAMBIÉN EN EL CONTENIDO DEL MODAL PRODUCTO PARA CERRAR
+const modalContent = document.getElementById("modalContent");
+let touchStartXModal = 0;
+let touchStartYModal = 0;
+
+modalContent.addEventListener("touchstart", (e) => {
+    touchStartXModal = e.touches[0].clientX;
+    touchStartYModal = e.touches[0].clientY;
+}, { passive: true });
+
+modalContent.addEventListener("touchend", (e) => {
+    const deltaX = e.changedTouches[0].clientX - touchStartXModal;
+    const deltaY = e.changedTouches[0].clientY - touchStartYModal;
+    if (deltaX > 80 && Math.abs(deltaY) < 50) {
+        cerrarModal();
+    }
+}, { passive: true });
+
+// 3. ZOOM COMPLETO PARA CELULARES (UN TOQUE, PELLIZCO/PINCH Y ARRASTRE)
+let scale = 1;
+let pointX = 0, pointY = 0;
+let startX = 0, startY = 0;
+let initialPinchDistance = null;
+let initialScale = 1;
+let lastTapTime = 0;
+
+const viewport = document.getElementById("zoomViewport");
+const imgTarget = document.getElementById("imgZoomTarget");
+
+function updateTransform() {
+    if (scale < 1) scale = 1;
+    if (scale === 1) { pointX = 0; pointY = 0; }
+    imgTarget.style.transform = `translate3d(${pointX}px, ${pointY}px, 0px) scale(${scale})`;
+}
+
+function abrirZoom(urlImagen) {
+    imgTarget.src = urlImagen;
+    scale = 1; pointX = 0; pointY = 0;
+    updateTransform();
+    document.getElementById("lightboxZoom").style.display = "block";
+}
+
+function cerrarZoom() { 
+    scale = 1; pointX = 0; pointY = 0;
+    updateTransform();
+    document.getElementById("lightboxZoom").style.display = "none"; 
+}
+
+function getDistance(touch1, touch2) {
+    const dx = touch1.clientX - touch2.clientX;
+    const dy = touch1.clientY - touch2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+}
+
+// TOGGLE ZOOM CON UN TOQUE / DOBLE TOQUE Y INTERACCIÓN TÁCTIL
+imgTarget.addEventListener("touchstart", (e) => {
+    if (e.touches.length === 1) {
+        const now = Date.now();
+        const touch = e.touches[0];
+        
+        startX = touch.clientX - pointX;
+        startY = touch.clientY - pointY;
+
+        // Detección de toque/doble toque
+        if (now - lastTapTime < 300) {
+            e.preventDefault();
+            if (scale > 1) {
+                scale = 1; pointX = 0; pointY = 0;
+            } else {
+                scale = 2.5;
+                const rect = imgTarget.getBoundingClientRect();
+                pointX = (window.innerWidth / 2 - (touch.clientX - rect.left)) * 0.5;
+                pointY = (window.innerHeight / 2 - (touch.clientY - rect.top)) * 0.5;
+            }
+            updateTransform();
+            lastTapTime = 0;
+            return;
+        }
+        lastTapTime = now;
+    } else if (e.touches.length === 2) {
+        e.preventDefault();
+        initialPinchDistance = getDistance(e.touches[0], e.touches[1]);
+        initialScale = scale;
+    }
+}, { passive: false });
+
+imgTarget.addEventListener("touchmove", (e) => {
+    if (e.touches.length === 1 && scale > 1) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        pointX = touch.clientX - startX;
+        pointY = touch.clientY - startY;
+        updateTransform();
+    } else if (e.touches.length === 2 && initialPinchDistance) {
+        e.preventDefault();
+        const currentDistance = getDistance(e.touches[0], e.touches[1]);
+        const pinchScale = currentDistance / initialPinchDistance;
+        scale = Math.min(Math.max(initialScale * pinchScale, 1), 4);
+        updateTransform();
+    }
+}, { passive: false });
+
+imgTarget.addEventListener("touchend", (e) => {
+    if (e.touches.length < 2) {
+        initialPinchDistance = null;
+    }
+}, { passive: true });
+
+// DESLIZAR HACIA ABAJO O DERECHA EN EL LIGHTBOX CUANDO SCALE=1 PARA CERRAR
+let lightboxStartX = 0, lightboxStartY = 0;
+viewport.addEventListener("touchstart", (e) => {
+    if (e.touches.length === 1) {
+        lightboxStartX = e.touches[0].clientX;
+        lightboxStartY = e.touches[0].clientY;
+    }
+}, { passive: true });
+
+viewport.addEventListener("touchend", (e) => {
+    if (scale === 1 && e.changedTouches.length === 1) {
+        const deltaX = e.changedTouches[0].clientX - lightboxStartX;
+        const deltaY = e.changedTouches[0].clientY - lightboxStartY;
+        if ((deltaY > 80 || deltaX > 80) && Math.abs(deltaX) < 150) {
+            cerrarZoom();
+        }
+    }
+}, { passive: true });
 
 document.addEventListener("DOMContentLoaded", cargarProductosDesdeSheets);
 </script>
