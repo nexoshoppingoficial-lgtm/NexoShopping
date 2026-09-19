@@ -41,20 +41,20 @@
             letter-spacing: 1px;
         }
 
-.catalogo-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 10px;
-    box-sizing: border-box;
- }
+        .catalogo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 10px;
+            box-sizing: border-box;
+        }
 
         @media (min-width: 600px) {
             .catalogo-grid {
-                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
                 gap: 20px;
                 padding: 15px;
             }
@@ -571,10 +571,15 @@ function abrirModalPorIndice(index) {
         select.appendChild(opt);
     }
 
-    // Llenar carrusel
+    // Llenar carrusel sin repetir la imagen principal si hay varias fotos
     const carrusel = document.getElementById("carruselImagenes");
     carrusel.innerHTML = '';
-    const imgs = (prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes : [prod.imagen];
+    
+    let imgs = (prod.imagenes && prod.imagenes.length > 0) ? [...prod.imagenes] : [prod.imagen];
+    if (imgs.length > 1) {
+        // Excluir la primera imagen para que no vuelva a aparecer en la ventana emergente
+        imgs = imgs.slice(1);
+    }
 
     imgs.forEach(imgUrl => {
         const img = document.createElement('img');
@@ -591,13 +596,19 @@ function abrirModal() {
     document.getElementById("modalProducto").style.display = "flex"; 
     requestAnimationFrame(() => {
         const carrusel = document.getElementById("carruselImagenes");
-        if (carrusel) carrusel.focus();
+        if (carrusel) {
+            carrusel.scrollLeft = 0;
+            carrusel.focus();
+        }
         actualizarFlechas();
     });
     setTimeout(actualizarFlechas, 100);
 }
 
-function cerrarModal() { document.getElementById("modalProducto").style.display = "none"; }
+function cerrarModal() { 
+    document.getElementById("modalProducto").style.display = "none"; 
+    renderizarCatalogo(productosGlobal); // Mantiene siempre la tarjeta principal con su imagen original e intacta
+}
 
 // --- CARRUSEL Y NAVEGACIÓN ---
 const carrusel = document.getElementById("carruselImagenes");
