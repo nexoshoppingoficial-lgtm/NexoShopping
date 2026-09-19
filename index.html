@@ -561,7 +561,7 @@
 </div>
 
 <script>
-// --- CONFIGURACIÓN E INTEGRACIÓN GOOGLE SHEETS ---
+// --- CONFIGURACIÓN DE TU ENDPOINT GOOGLE SHEETS ---
 const scriptURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR3MrnF2ljSQja7InTGoRPtg-SpCFpsExOBVzGv9ZdLZsDNxhw6_PfTG1ZTgfB_JntJEgsqyoZ023a0/pub?gid=0&single=true&output=csv
 ';
 let productosGlobal = [];
@@ -571,20 +571,78 @@ const CLAVE_CARRITO = "carrito_global_tienda";
 const TELEFONO_WA = "573212295023";
 const META_ENVIO = 120000;
 
-// Descargar catálogo desde Google Sheets
+// Descargar catálogo de Google Sheets de manera tolerante a fallos
 async function fetchData() {
     try {
-        const response = await fetch(scriptURL);
-        productosGlobal = await response.json();
-        document.getElementById('loading').style.display = 'none';
-        renderizarCatalogo(productosGlobal);
+        const response = await fetch(scriptURL, {
+            method: 'GET',
+            redirect: 'follow'
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (Array.isArray(data)) {
+            productosGlobal = data.map(normalizarProducto);
+            document.getElementById('loading').style.display = 'none';
+            renderizarCatalogo(productosGlobal);
+        } else {
+            throw new Error('La respuesta recibida no es una lista válida de productos.');
+        }
     } catch (error) {
         console.error('Error al cargar datos:', error);
-        document.getElementById('loading').innerText = 'Error al cargar los productos. Intenta recargar la página.';
+        document.getElementById('loading').innerText = 'Error al cargar los productos. Por favor verifica la publicación de tu Google Sheet.';
     }
 }
 
-// Renderizar tarjetas estilo Atenea con los datos intactos
+// Mapeador flexible para admitir distintos nombres de columnas en Google Sheets
+function normalizarProducto(item) {
+    const p = {};
+    for (let key in item) {
+        p[key.toLowerCase().trim()] = item[key];
+    }
+
+    const nombre = p.nombre || p.titulo || p.product || 'Producto';
+    const precioRaw = p.precio || p.price || 0;
+    const precio = parseFloat(String(precioRaw).replace(/[^0-9.]/g, '')) || 0;
+    const descripcion = p.descripcion || p.description || '';
+
+    // Manejo de múltiples imágenes
+    let imagenes = [];
+    if (p.imagenes) {
+        imagenes = Array.isArray(p.imagenes) ? p.imagenes : String(p.imagenes).split(',').map(s => s.trim());
+    } else if (p.imagen) {
+        imagenes = [p.imagen];
+    } else if (p.image) {
+        imagenes = [p.image];
+    } else {
+        imagenes = ['https://via.placeholder.com/300'];
+    }
+
+    // Manejo de variantes / tonos
+    let variantes = [];
+    if (p.variantes) {
+        variantes = Array.isArray(p.variantes) ? p.variantes : String(p.variantes).split(',').map(s => s.trim());
+    } else if (p.tonos) {
+        variantes = Array.isArray(p.tonos) ? p.tonos : String(p.tonos).split(',').map(s => s.trim());
+    } else if (p.variante) {
+        variantes = [p.variante];
+    }
+
+    return {
+        nombre: nombre,
+        precio: precio,
+        descripcion: descripcion,
+        imagen: imagenes[0],
+        imagenes: imagenes,
+        variantes: variantes
+    };
+}
+
+// Renderizar tarjetas con diseño Atenea
 function renderizarCatalogo(productos) {
     const grid = document.getElementById('catalogoGrid');
     grid.innerHTML = '';
@@ -627,7 +685,7 @@ function renderizarCatalogo(productos) {
     actualizarBadges();
 }
 
-// --- CÓDIGO DE FILTRADO AGREGADO ---
+// --- FILTRO BÚSQUEDA ---
 function filtrarProductos() {
     const texto = document.getElementById('inputFiltro').value.toLowerCase().trim();
     if (!texto) {
@@ -645,7 +703,7 @@ function filtrarProductos() {
     renderizarCatalogo(filtrados);
 }
 
-// Abrir modal configurando la información dinámica del producto
+// Abrir modal configurando la información dinámica
 function abrirModalPorIndice(index) {
     const prod = productosGlobal[index];
     if (!prod) return;
@@ -672,7 +730,7 @@ function abrirModalPorIndice(index) {
         select.appendChild(opt);
     }
 
-    // Llenar carrusel
+    // Llenar carrusel de imágenes
     const carrusel = document.getElementById("carruselImagenes");
     carrusel.innerHTML = '';
     const imgs = (prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes : [prod.imagen];
@@ -762,7 +820,7 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
-// --- SWIPE MODALES EN MÓVIL ---
+// --- SWIPE CERRAR MODALES ---
 function habilitarSwipeCerrarModal(idContenedor, callbackCerrar, selectoresIgnorar = []) {
     const contenedor = document.getElementById(idContenedor);
     if (!contenedor) return;
