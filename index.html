@@ -476,7 +476,6 @@ function parseCSV(text) {
         if (campoSecundario) {
             imgsSecundarias = campoSecundario.split(',').map(s => s.trim()).filter(s => s.startsWith('http'));
         } else {
-            // Si no hay columna específica 'imagenes', busca columnas adicionales
             for (let k in obj) {
                 if ((k === 'imagenes' || k.includes('carrusel') || k.includes('foto2') || k.includes('foto3') || k.includes('img2')) && obj[k]) {
                     let splitVal = obj[k].split(',').map(s => s.trim()).filter(s => s.startsWith('http'));
@@ -485,7 +484,6 @@ function parseCSV(text) {
             }
         }
 
-        // Combinar lista completa de imágenes para el producto
         let todasLasImgs = [imgPrincipal, ...imgsSecundarias];
 
         // Extraer Tonos / Variantes
@@ -531,7 +529,6 @@ function renderizarCatalogo(productos) {
         card.className = 'card-atenea';
         card.setAttribute('tabindex', '0');
 
-        // Imagen que aparece al pasar el mouse (si hay más de una imagen)
         const hoverImg = (prod.imagenes && prod.imagenes.length > 1) ? prod.imagenes[1] : prod.imagen;
 
         card.innerHTML = `
@@ -591,7 +588,7 @@ function abrirModalPorIndice(index) {
     
     let imgs = (prod.imagenes && prod.imagenes.length > 0) ? [...prod.imagenes] : [prod.imagen];
     if (imgs.length > 1) {
-        imgs = imgs.slice(1); // Omitir la principal para el modal si hay secundarias
+        imgs = imgs.slice(1);
     }
 
     imgs.forEach(imgUrl => {
@@ -648,7 +645,7 @@ function actualizarFlechas() {
 carrusel.addEventListener("scroll", actualizarFlechas);
 window.addEventListener("resize", actualizarFlechas);
 
-// --- TECLADO GLOBAL ---
+// --- TECLADO GLOBAL (FLECHAS ARRIBA/ABAJO DESPLAZAN LA VENTANA EMERGENTE) ---
 document.addEventListener("keydown", (e) => {
     const modalProductoVisible = document.getElementById("modalProducto").style.display === "flex";
     const modalCarritoVisible = document.getElementById("modalCarrito").style.display === "flex";
@@ -665,13 +662,16 @@ document.addEventListener("keydown", (e) => {
     }
 
     if (modalProductoVisible && !lightboxVisible && !modalCarritoVisible) {
-        const paso = carrusel.clientWidth;
         const modalContent = document.getElementById("modalContent");
 
-        if (e.key === "ArrowRight") { e.preventDefault(); carrusel.scrollBy({ left: paso, behavior: "smooth" }); } 
-        else if (e.key === "ArrowLeft") { e.preventDefault(); carrusel.scrollBy({ left: -paso, behavior: "smooth" }); } 
-        else if (e.key === "ArrowDown") { e.preventDefault(); modalContent.scrollBy({ top: 100, behavior: "smooth" }); } 
-        else if (e.key === "ArrowUp") { e.preventDefault(); modalContent.scrollBy({ top: -100, behavior: "smooth" }); } 
+        if (e.key === "ArrowDown") { 
+            e.preventDefault(); 
+            modalContent.scrollBy({ top: 80, behavior: "smooth" }); 
+        } 
+        else if (e.key === "ArrowUp") { 
+            e.preventDefault(); 
+            modalContent.scrollBy({ top: -80, behavior: "smooth" }); 
+        } 
         else if (e.key === "Enter") {
             if (document.activeElement === carrusel) {
                 e.preventDefault();
