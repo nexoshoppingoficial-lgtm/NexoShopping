@@ -8,12 +8,10 @@
     <style>
         * { 
             box-sizing: border-box; 
-            /* Ocultar scrollbars en todos los elementos */
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE y Edge */
+            scrollbar-width: none; 
+            -ms-overflow-style: none; 
         }
 
-        /* Ocultar scrollbars en navegadores basados en WebKit (Chrome, Safari, Edge) */
         ::-webkit-scrollbar {
             display: none;
             width: 0px;
@@ -418,7 +416,7 @@ async function fetchData() {
     }
 }
 
-// Analizador de CSV
+// Analizador de CSV optimizado para leer 'imagen' y 'imagenes'
 function parseCSV(text) {
     const lines = text.trim().split('\n');
     if (lines.length <= 1) return [];
@@ -460,20 +458,35 @@ function parseCSV(text) {
         const descripcion = obj.descripcion || '';
         const categoria = obj.categoria || obj.cat || '';
 
-        // Extraer URLs de imágenes
-        let imgs = [];
-        if (obj.imagenes) {
-            imgs = obj.imagenes.split(',').map(s => s.trim()).filter(s => s.startsWith('http'));
-        }
-        
-        if (imgs.length === 0) {
+        // 1. Imagen Principal
+        let imgPrincipal = obj.imagen || obj.fotoprincipal || '';
+        if (!imgPrincipal) {
             for (let k in obj) {
                 if ((k.includes('imagen') || k.includes('foto') || k.includes('img')) && obj[k] && obj[k].startsWith('http')) {
-                    imgs.push(obj[k]);
+                    imgPrincipal = obj[k];
+                    break;
                 }
             }
         }
-        if (imgs.length === 0) imgs = ['https://via.placeholder.com/300'];
+        if (!imgPrincipal) imgPrincipal = 'https://via.placeholder.com/300';
+
+        // 2. Imágenes secundarias (Carrusel / Ventana Emergente)
+        let imgsSecundarias = [];
+        let campoSecundario = obj.imagenes || obj.carrusel || obj.fotos || '';
+        if (campoSecundario) {
+            imgsSecundarias = campoSecundario.split(',').map(s => s.trim()).filter(s => s.startsWith('http'));
+        } else {
+            // Si no hay columna específica 'imagenes', busca columnas adicionales
+            for (let k in obj) {
+                if ((k === 'imagenes' || k.includes('carrusel') || k.includes('foto2') || k.includes('foto3') || k.includes('img2')) && obj[k]) {
+                    let splitVal = obj[k].split(',').map(s => s.trim()).filter(s => s.startsWith('http'));
+                    imgsSecundarias.push(...splitVal);
+                }
+            }
+        }
+
+        // Combinar lista completa de imágenes para el producto
+        let todasLasImgs = [imgPrincipal, ...imgsSecundarias];
 
         // Extraer Tonos / Variantes
         let tonos = [];
@@ -494,8 +507,8 @@ function parseCSV(text) {
             precio: precio,
             descripcion: descripcion,
             categoria: categoria,
-            imagen: imgs[0],
-            imagenes: imgs,
+            imagen: imgPrincipal,
+            imagenes: todasLasImgs,
             variantes: tonos
         });
     }
@@ -518,6 +531,7 @@ function renderizarCatalogo(productos) {
         card.className = 'card-atenea';
         card.setAttribute('tabindex', '0');
 
+        // Imagen que aparece al pasar el mouse (si hay más de una imagen)
         const hoverImg = (prod.imagenes && prod.imagenes.length > 1) ? prod.imagenes[1] : prod.imagen;
 
         card.innerHTML = `
@@ -571,14 +585,13 @@ function abrirModalPorIndice(index) {
         select.appendChild(opt);
     }
 
-    // Llenar carrusel sin repetir la imagen principal si hay varias fotos
+    // Llenar carrusel sin repetir la imagen principal si hay fotos secundarias
     const carrusel = document.getElementById("carruselImagenes");
     carrusel.innerHTML = '';
     
     let imgs = (prod.imagenes && prod.imagenes.length > 0) ? [...prod.imagenes] : [prod.imagen];
     if (imgs.length > 1) {
-        // Excluir la primera imagen para que no vuelva a aparecer en la ventana emergente
-        imgs = imgs.slice(1);
+        imgs = imgs.slice(1); // Omitir la principal para el modal si hay secundarias
     }
 
     imgs.forEach(imgUrl => {
@@ -607,7 +620,7 @@ function abrirModal() {
 
 function cerrarModal() { 
     document.getElementById("modalProducto").style.display = "none"; 
-    renderizarCatalogo(productosGlobal); // Mantiene siempre la tarjeta principal con su imagen original e intacta
+    renderizarCatalogo(productosGlobal); 
 }
 
 // --- CARRUSEL Y NAVEGACIÓN ---
