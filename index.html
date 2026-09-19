@@ -25,34 +25,6 @@
         ::-webkit-scrollbar-thumb { background: rgba(74, 63, 53, 0.2); border-radius: 10px; backdrop-filter: blur(2px); }
         ::-webkit-scrollbar-thumb:hover { background: rgba(74, 63, 53, 0.4); }
 
-        /* --- FILTRO Y BUSCADOR --- */
-        .filter-container {
-            max-width: 1200px;
-            margin: 20px auto 10px auto;
-            padding: 0 15px;
-            display: flex;
-            justify-content: center;
-        }
-        .filter-input {
-            width: 100%;
-            max-width: 400px;
-            padding: 10px 16px;
-            border: 1px solid #e3d7cb;
-            border-radius: 20px;
-            background: #faf6f0;
-            font-family: 'Lato', sans-serif;
-            font-size: 13px;
-            color: #4a3f35;
-            outline: none;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-        }
-        .filter-input:focus {
-            border-color: #4a3f35;
-            background: #ffffff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-
         /* --- GRILLA Y TARJETAS ATENEA --- */
         #loading {
             text-align: center;
@@ -166,19 +138,22 @@
             cursor: zoom-in; background: #ffffff; border-radius: 4px;
         }
 
+        /* FLECHAS ULTRA TRASLÚCIDAS Y SUTILES */
         .carrusel-arrow {
             position: absolute; top: 50%; transform: translateY(-50%);
-            width: 32px; height: 32px; background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(4px); border: 1px solid rgba(255, 255, 255, 0.6);
+            width: 28px; height: 28px; 
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(2px); 
+            border: 1px solid rgba(255, 255, 255, 0.3);
             color: #4a3f35; border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; font-size: 14px;
+            align-items: center; justify-content: center; font-size: 12px;
             cursor: pointer; z-index: 5; opacity: 0;
             transition: opacity 0.2s ease, background 0.2s ease; pointer-events: none;
         }
 
-        .carrusel-wrapper:hover .carrusel-arrow.visible { opacity: 1; pointer-events: auto; }
-        @media (hover: none) { .carrusel-arrow.visible { opacity: 1; pointer-events: auto; } }
-        .carrusel-arrow:hover { background: rgba(255, 255, 255, 0.8); }
+        .carrusel-wrapper:hover .carrusel-arrow.visible { opacity: 0.7; pointer-events: auto; }
+        @media (hover: none) { .carrusel-arrow.visible { opacity: 0.7; pointer-events: auto; } }
+        .carrusel-arrow:hover { background: rgba(255, 255, 255, 0.6); opacity: 1 !important; }
         .carrusel-arrow.left { left: 8px; }
         .carrusel-arrow.right { right: 8px; }
 
@@ -274,6 +249,18 @@
         .btn-cant-cart { width: 26px; height: 26px; background: transparent; border: none; cursor: pointer; font-weight: bold; color: #4a4a4a; }
         .num-cant-cart { width: 28px; text-align: center; font-size: 12px; font-weight: 700; color: #4a4a4a; border-left: 1px solid #eeeeee; border-right: 1px solid #eeeeee; }
         
+        /* BOTÓN DE CANECA PARA ELIMINAR */
+        .btn-eliminar-item {
+            background: transparent;
+            border: none;
+            color: #a38c78;
+            cursor: pointer;
+            font-size: 15px;
+            padding: 4px 6px;
+            transition: color 0.2s ease;
+        }
+        .btn-eliminar-item:hover { color: #d9534f; }
+
         .total-fila { display: flex; justify-content: space-between; font-size: 15px; font-weight: 700; margin-top: 20px; padding-top: 15px; border-top: 1px solid #e3d7cb; color: #333333; letter-spacing: 0.5px; }
         
         .btn-realizar-compra { 
@@ -287,11 +274,6 @@
     </style>
 </head>
 <body>
-
-<!-- BUSCADOR / FILTRO -->
-<div class="filter-container">
-    <input type="text" id="inputFiltro" class="filter-input" placeholder="🔍 Buscar por nombre o tono..." onkeyup="filtrarProductos()">
-</div>
 
 <!-- CONTENEDOR PRINCIPAL -->
 <div id="loading">Cargando productos desde Google Sheets...</div>
@@ -397,7 +379,20 @@ async function fetchData() {
         if (!response.ok) throw new Error("Error en conexión HTTP");
         const csvText = await response.text();
         
-        productosGlobal = parseCSV(csvText);
+        let productosProcesados = parseCSV(csvText);
+
+        // FILTRADO AUTOMÁTICO POR URL SI SE ESPECIFICA CATEGORÍA (Ejemplo: ?categoria=BASES)
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoriaFiltro = urlParams.get('categoria') || urlParams.get('cat');
+
+        if (categoriaFiltro) {
+            const catL = categoriaFiltro.toLowerCase().trim();
+            productosProcesados = productosProcesados.filter(p => 
+                p.categoria && p.categoria.toLowerCase().trim().includes(catL)
+            );
+        }
+
+        productosGlobal = productosProcesados;
         document.getElementById('loading').style.display = 'none';
         renderizarCatalogo(productosGlobal);
     } catch (error) {
@@ -406,12 +401,11 @@ async function fetchData() {
     }
 }
 
-// Analizador de CSV tolerante con URLs y caracteres especiales
+// Analizador de CSV
 function parseCSV(text) {
     const lines = text.trim().split('\n');
     if (lines.length <= 1) return [];
 
-    // Parsear fila con respeto de comillas dobles
     function splitCSVRow(rowText) {
         const result = [];
         let current = '';
@@ -447,6 +441,7 @@ function parseCSV(text) {
         const nombre = obj.nombre || obj.titulo || 'Producto';
         const precio = parseFloat(String(obj.precio || 0).replace(/[^0-9.]/g, '')) || 0;
         const descripcion = obj.descripcion || '';
+        const categoria = obj.categoria || obj.cat || '';
 
         // Extraer URLs de imágenes
         let imgs = [];
@@ -481,6 +476,7 @@ function parseCSV(text) {
             nombre: nombre,
             precio: precio,
             descripcion: descripcion,
+            categoria: categoria,
             imagen: imgs[0],
             imagenes: imgs,
             variantes: tonos
@@ -496,7 +492,7 @@ function renderizarCatalogo(productos) {
     grid.innerHTML = '';
 
     if (productos.length === 0) {
-        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #888; padding: 20px;">No se encontraron productos.</div>';
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #888; padding: 20px;">No se encontraron productos para esta categoría.</div>';
         return;
     }
 
@@ -531,24 +527,6 @@ function renderizarCatalogo(productos) {
     });
 
     actualizarBadges();
-}
-
-// --- FILTRO BÚSQUEDA ---
-function filtrarProductos() {
-    const texto = document.getElementById('inputFiltro').value.toLowerCase().trim();
-    if (!texto) {
-        renderizarCatalogo(productosGlobal);
-        return;
-    }
-
-    const filtrados = productosGlobal.filter(p => {
-        const coincideNombre = p.nombre.toLowerCase().includes(texto);
-        const coincideDescripcion = p.descripcion ? p.descripcion.toLowerCase().includes(texto) : false;
-        const coincideVariante = p.variantes ? p.variantes.some(v => v.toLowerCase().includes(texto)) : false;
-        return coincideNombre || coincideDescripcion || coincideVariante;
-    });
-
-    renderizarCatalogo(filtrados);
 }
 
 // Abrir modal con los datos del producto seleccionado
@@ -821,10 +799,13 @@ function cargarCarrito() {
         <div class="item-fila">
             <div style="flex:1;">
                 <span class="item-nombre" style="display:block;">${item.nombre}</span>
-                <div class="cant-contros-cart" style="display:inline-flex; margin-top:6px;">
-                    <button type="button" class="btn-cant-cart" onclick="modificarCantidad(${index}, -1)">−</button>
-                    <span class="num-cant-cart">${item.cantidad}</span>
-                    <button type="button" class="btn-cant-cart" onclick="modificarCantidad(${index}, 1)">+</button>
+                <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+                    <div class="cant-contros-cart">
+                        <button type="button" class="btn-cant-cart" onclick="modificarCantidad(${index}, -1)">−</button>
+                        <span class="num-cant-cart">${item.cantidad}</span>
+                        <button type="button" class="btn-cant-cart" onclick="modificarCantidad(${index}, 1)">+</button>
+                    </div>
+                    <button type="button" class="btn-eliminar-item" onclick="eliminarProductoDirecto(${index})" title="Eliminar producto">🗑️</button>
                 </div>
             </div>
             <span class="item-precio">$${Number(item.precio).toLocaleString("es-CO")}</span>
@@ -835,6 +816,16 @@ function cargarCarrito() {
     document.getElementById("totalPagar").innerText = `$${totalPagar.toLocaleString("es-CO")} COP`;
     actualizarBadges(cantTotal);
     actualizarBarraEnvio(totalPagar);
+}
+
+// ELIMINAR PRODUCTO COMPLETO DESDE LA CANECA
+function eliminarProductoDirecto(index) {
+    let carrito = JSON.parse(localStorage.getItem(CLAVE_CARRITO) || "[]");
+    if (carrito[index]) {
+        carrito.splice(index, 1);
+        localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito));
+        cargarCarrito();
+    }
 }
 
 function actualizarBadges(cantidad) {
