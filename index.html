@@ -8,12 +8,10 @@
     <style>
         * { 
             box-sizing: border-box; 
-            /* Ocultar scrollbars en todos los elementos */
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE y Edge */
+            scrollbar-width: none; 
+            -ms-overflow-style: none; 
         }
 
-        /* Ocultar scrollbars en navegadores basados en WebKit (Chrome, Safari, Edge) */
         ::-webkit-scrollbar {
             display: none;
             width: 0px;
@@ -125,59 +123,42 @@
             padding: 2px 6px; font-size: 9px; font-weight: 700;
         }
 
-        /* --- VENTANA EMERGENTE (MODAL PRODUCTO) INDEPENDIENTE Y FIJA EN PANTALLA --- */
-        .modal-overlay {
-            display: none; 
-            position: fixed !important; 
-            top: 0 !important; 
-            left: 0 !important;
-            width: 100vw !important; 
-            height: 100vh !important; 
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(2px); 
-            z-index: 999999;
-            align-items: center !important; 
-            justify-content: center !important; 
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .modal-carrito-overlay {
-            display: none; 
-            position: fixed !important; 
-            top: 0 !important; 
-            left: 0 !important;
-            width: 100vw !important; 
-            height: 100vh !important; 
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(2px); 
-            z-index: 999999;
-            align-items: center !important; 
-            justify-content: center !important; 
+        /* --- ESTILOS DINÁMICOS DE VENTANA EMERGENTE (MODAL) --- */
+        .modal-overlay, .modal-carrito-overlay {
+            display: flex; 
+            position: fixed; 
+            top: 0; 
+            left: 0;
+            width: 100vw; 
+            height: 100vh; 
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(3px); 
+            z-index: 99999999;
+            align-items: center; 
+            justify-content: center; 
             padding: 20px;
             box-sizing: border-box;
         }
 
         .modal-content {
             background: #ffffff; 
-            width: 95vw !important; 
-            max-width: 750px !important; 
-            max-height: 90vh !important;
-            border-radius: 6px; 
+            width: 92vw; 
+            max-width: 650px; 
+            max-height: 88vh;
+            border-radius: 8px; 
             overflow-y: auto; 
             position: relative; 
-            padding: 32px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.25); 
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
             color: #4a4a4a; 
             outline: none;
-            margin: auto !important;
         }
 
         /* Carrusel Wrapper */
         .carrusel-wrapper { position: relative; width: 100%; margin-bottom: 16px; }
 
         .carrusel-container {
-            width: 100%; aspect-ratio: 1 / 1; max-height: 450px;
+            width: 100%; aspect-ratio: 1 / 1; max-height: 420px;
             display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
             gap: 8px; border-radius: 4px; background: #fdfbf7;
             outline: none; scroll-behavior: smooth;
@@ -192,28 +173,29 @@
         /* FLECHAS ULTRA TRASLÚCIDAS Y SUTILES */
         .carrusel-arrow {
             position: absolute; top: 50%; transform: translateY(-50%);
-            width: 28px; height: 28px; 
+            width: 32px; height: 32px; 
             background: rgba(255, 255, 255, 0.25);
             backdrop-filter: blur(2px); 
             border: 1px solid rgba(255, 255, 255, 0.3);
             color: #4a3f35; border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; font-size: 12px;
+            align-items: center; justify-content: center; font-size: 13px;
             cursor: pointer; z-index: 5; opacity: 0;
             transition: opacity 0.2s ease, background 0.2s ease; pointer-events: none;
         }
 
-        .carrusel-wrapper:hover .carrusel-arrow.visible { opacity: 0.7; pointer-events: auto; }
-        @media (hover: none) { .carrusel-arrow.visible { opacity: 0.7; pointer-events: auto; } }
-        .carrusel-arrow:hover { background: rgba(255, 255, 255, 0.6); opacity: 1 !important; }
-        .carrusel-arrow.left { left: 8px; }
-        .carrusel-arrow.right { right: 8px; }
+        .carrusel-wrapper:hover .carrusel-arrow.visible { opacity: 0.8; pointer-events: auto; }
+        @media (hover: none) { .carrusel-arrow.visible { opacity: 0.8; pointer-events: auto; } }
+        .carrusel-arrow:hover { background: rgba(255, 255, 255, 0.7); opacity: 1 !important; }
+        .carrusel-arrow.left { left: 10px; }
+        .carrusel-arrow.right { right: 10px; }
 
         /* Lightbox / Zoom */
         .lightbox-overlay {
-            display: none; position: fixed; top: 0; left: 0;
+            display: flex; position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.95);
-            z-index: 1000000; touch-action: none; user-select: none;
+            z-index: 100000000; touch-action: none; user-select: none;
             -webkit-user-select: none; overflow: hidden;
+            align-items: center; justify-content: center;
         }
 
         .lightbox-viewport {
@@ -232,7 +214,7 @@
             background: rgba(255, 255, 255, 0.12); color: #ffffff;
             border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50%;
             width: 38px; height: 38px; font-size: 18px; font-weight: bold;
-            cursor: pointer; z-index: 1000002; display: flex; align-items: center;
+            cursor: pointer; z-index: 100000001; display: flex; align-items: center;
             justify-content: center; backdrop-filter: blur(4px); transition: background 0.2s ease;
         }
         .lightbox-cerrar:hover { background: rgba(255, 255, 255, 0.25); }
@@ -240,7 +222,7 @@
         .lightbox-instruccion {
             position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
             color: rgba(255, 255, 255, 0.75); font-size: 11px; letter-spacing: 0.8px;
-            text-transform: uppercase; pointer-events: none; z-index: 1000001;
+            text-transform: uppercase; pointer-events: none; z-index: 100000001;
             background: rgba(0, 0, 0, 0.4); padding: 6px 16px; border-radius: 20px;
             backdrop-filter: blur(4px); white-space: nowrap; border: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -249,7 +231,7 @@
         .carrito-container { 
             width: 100%; max-width: 440px; background: #faf6f0;
             border: 1px solid #f0e6d8; border-radius: 6px; padding: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.12); position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); position: relative;
             max-height: 85vh; overflow-y: auto;
         }
 
@@ -300,7 +282,6 @@
         .btn-cant-cart { width: 26px; height: 26px; background: transparent; border: none; cursor: pointer; font-weight: bold; color: #4a4a4a; }
         .num-cant-cart { width: 28px; text-align: center; font-size: 12px; font-weight: 700; color: #4a4a4a; border-left: 1px solid #eeeeee; border-right: 1px solid #eeeeee; }
         
-        /* BOTÓN DE CANECA PARA ELIMINAR */
         .btn-eliminar-item {
             background: transparent;
             border: none;
@@ -330,88 +311,6 @@
 <div id="loading">Cargando productos desde Google Sheets...</div>
 <div id="catalogoGrid" class="catalogo-grid"></div>
 
-<!-- MODAL PRODUCTO -->
-<div class="modal-overlay" id="modalProducto">
-    <div class="modal-content" id="modalContent" tabindex="0">
-        <button type="button" class="btn-cerrar" onclick="cerrarModal()">✕</button>
-
-        <div class="carrusel-wrapper">
-            <button class="carrusel-arrow left" id="arrowLeft" onclick="scrollCarrusel(-1)">❮</button>
-            <div class="carrusel-container" id="carruselImagenes" tabindex="0"></div>
-            <button class="carrusel-arrow right" id="arrowRight" onclick="scrollCarrusel(1)">❯</button>
-        </div>
-
-        <h2 class="prod-titulo" id="modalTitulo"></h2>
-        <div class="prod-precio" id="modalPrecio"></div>
-        <p class="prod-descripcion" id="modalDescripcion"></p>
-
-        <hr class="prod-separador">
-
-        <label for="selVariante">Elige tu tono:</label>
-        <select id="selVariante"></select>
-
-        <div class="compra-row">
-            <div class="cantidad-control">
-                <button type="button" class="btn-cant" onclick="cambiarCant(-1)">−</button>
-                <input type="number" id="inpCant" class="inp-cant" value="1" readonly>
-                <button type="button" class="btn-cant" onclick="cambiarCant(1)">+</button>
-            </div>
-            <button type="button" class="btn-agregar-beige" onclick="agregarItem()">AÑADIR AL CARRITO</button>
-        </div>
-
-        <div class="envio-box">
-            <svg class="truck-icon" viewBox="0 0 24 24">
-                <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-7.5l1.96 2.5H17V11h2.5zm-1 7.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
-            </svg>
-            <div><strong>ENVÍO GRATIS</strong> en compras superiores a <strong>$120.000</strong>. Envíos a toda Colombia.</div>
-        </div>
-
-        <div class="pagos-container">
-            <div class="pagos-titulo">Transfiere o paga con tu cuenta:</div>
-            <div style="font-size: 11px; color: #444; font-weight: 700;">💳 Daviplata | Nequi | Lulo Bank | Breve | Todos los bancos</div>
-        </div>
-    </div>
-</div>
-
-<!-- LIGHTBOX ZOOM -->
-<div class="lightbox-overlay" id="lightboxZoom">
-    <button type="button" class="lightbox-cerrar" onclick="cerrarZoom()">✕</button>
-    <div class="lightbox-viewport" id="zoomViewport">
-        <img id="imgZoomTarget" src="" alt="Foto ampliada">
-    </div>
-    <div class="lightbox-instruccion">Toca para zoom / Pellizca / Desliza para salir</div>
-</div>
-
-<!-- MODAL CARRITO -->
-<div class="modal-carrito-overlay" id="modalCarrito">
-    <div class="carrito-container">
-        <button type="button" class="btn-cerrar-cart" onclick="cerrarCarrito()">✕</button>
-        
-        <div class="header-carrito">
-            <span style="font-size: 18px;">🛒</span>
-            <span class="header-carrito-txt">TU CARRITO DE COMPRAS</span>
-        </div>
-
-        <div class="envio-gratis-bar-container">
-            <div class="envio-gratis-txt" id="txtEnvioGratis">¡Agrega <strong>$120.000</strong> más y consigue envío gratuito!</div>
-            <div class="envio-gratis-progress">
-                <div class="envio-gratis-fill" id="barEnvioGratis"></div>
-            </div>
-        </div>
-
-        <div id="listaItems"></div>
-
-        <div class="total-fila">
-            <span>TOTAL</span>
-            <span id="totalPagar">$0 COP</span>
-        </div>
-
-        <button type="button" class="btn-realizar-compra" onclick="enviarPedido()">
-            REALIZAR COMPRA
-        </button>
-    </div>
-</div>
-
 <script>
 // --- ENLACE DIRECTO DE TU SHEET ---
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR3MrnF2ljSQja7InTGoRPtg-SpCFpsExOBVzGv9ZdLZsDNxhw6_PfTG1ZTgfB_JntJEgsqyoZ023a0/pub?gid=0&single=true&output=csv';
@@ -432,7 +331,6 @@ async function fetchData() {
         
         let productosProcesados = parseCSV(csvText);
 
-        // FILTRADO AUTOMÁTICO POR URL SI SE ESPECIFICA CATEGORÍA (Ejemplo: ?categoria=BASES)
         const urlParams = new URLSearchParams(window.location.search);
         const categoriaFiltro = urlParams.get('categoria') || urlParams.get('cat');
 
@@ -444,11 +342,13 @@ async function fetchData() {
         }
 
         productosGlobal = productosProcesados;
-        document.getElementById('loading').style.display = 'none';
+        const loadingEl = document.getElementById('loading');
+        if(loadingEl) loadingEl.style.display = 'none';
         renderizarCatalogo(productosGlobal);
     } catch (error) {
         console.error('Error al cargar datos:', error);
-        document.getElementById('loading').innerText = 'Error al cargar los productos. Por favor reintenta en un momento.';
+        const loadingEl = document.getElementById('loading');
+        if(loadingEl) loadingEl.innerText = 'Error al cargar los productos. Por favor reintenta en un momento.';
     }
 }
 
@@ -494,7 +394,6 @@ function parseCSV(text) {
         const descripcion = obj.descripcion || '';
         const categoria = obj.categoria || obj.cat || '';
 
-        // Extraer URLs de imágenes
         let imgs = [];
         if (obj.imagenes) {
             imgs = obj.imagenes.split(',').map(s => s.trim()).filter(s => s.startsWith('http'));
@@ -509,7 +408,6 @@ function parseCSV(text) {
         }
         if (imgs.length === 0) imgs = ['https://via.placeholder.com/300'];
 
-        // Extraer Tonos / Variantes
         let tonos = [];
         if (obj.tonos) {
             tonos = obj.tonos.split(',').map(s => s.trim()).filter(s => s.length > 0);
@@ -540,6 +438,7 @@ function parseCSV(text) {
 // Renderizar tarjetas estilo Atenea Makeup
 function renderizarCatalogo(productos) {
     const grid = document.getElementById('catalogoGrid');
+    if (!grid) return;
     grid.innerHTML = '';
 
     if (productos.length === 0) {
@@ -580,81 +479,111 @@ function renderizarCatalogo(productos) {
     actualizarBadges();
 }
 
-// Abrir modal con los datos del producto seleccionado
+// Abrir modal creando elementos dinámicamente en el body principal (fuera del iframe de Google Sites)
 function abrirModalPorIndice(index) {
     const prod = productosGlobal[index];
     if (!prod) return;
     productoSeleccionado = prod;
 
-    document.getElementById("modalTitulo").innerText = prod.nombre;
-    document.getElementById("modalPrecio").innerText = `$${Number(prod.precio).toLocaleString('es-CO')} COP`;
-    document.getElementById("modalDescripcion").innerText = prod.descripcion || '';
+    // Remover modal anterior si existe
+    const modalAnt = document.getElementById("modalProductoGlobal");
+    if (modalAnt) modalAnt.remove();
 
-    // Llenar selector de variantes/tonos
-    const select = document.getElementById("selVariante");
-    select.innerHTML = '';
+    let variantesHtml = '';
     if (prod.variantes && prod.variantes.length > 0) {
         prod.variantes.forEach(v => {
-            const opt = document.createElement('option');
-            opt.value = v; opt.innerText = v;
-            select.appendChild(opt);
+            variantesHtml += `<option value="${v}">${v}</option>`;
         });
     } else {
-        const opt = document.createElement('option');
-        opt.value = "Única"; opt.innerText = "Opción Única";
-        select.appendChild(opt);
+        variantesHtml = `<option value="Única">Opción Única</option>`;
     }
 
-    // Llenar carrusel sin repetir la imagen principal si hay varias fotos
-    const carrusel = document.getElementById("carruselImagenes");
-    carrusel.innerHTML = '';
-    
     let imgs = (prod.imagenes && prod.imagenes.length > 0) ? [...prod.imagenes] : [prod.imagen];
     if (imgs.length > 1) {
         imgs = imgs.slice(1);
     }
 
+    let carruselImgsHtml = '';
     imgs.forEach(imgUrl => {
-        const img = document.createElement('img');
-        img.src = imgUrl; img.alt = prod.nombre;
-        img.onclick = () => abrirZoom(imgUrl);
-        carrusel.appendChild(img);
+        carruselImgsHtml += `<img src="${imgUrl}" alt="${prod.nombre}" onclick="abrirZoom('${imgUrl}')">`;
     });
 
-    document.getElementById("inpCant").value = 1;
-    abrirModal();
-}
+    const modalHTML = `
+    <div class="modal-overlay" id="modalProductoGlobal">
+        <div class="modal-content" id="modalContent" tabindex="0">
+            <button type="button" class="btn-cerrar" onclick="cerrarModal()">✕</button>
 
-function abrirModal() { 
-    document.getElementById("modalProducto").style.display = "flex"; 
-    requestAnimationFrame(() => {
+            <div class="carrusel-wrapper">
+                <button class="carrusel-arrow left" id="arrowLeft" onclick="scrollCarrusel(-1)">❮</button>
+                <div class="carrusel-container" id="carruselImagenes" tabindex="0">
+                    ${carruselImgsHtml}
+                </div>
+                <button class="carrusel-arrow right" id="arrowRight" onclick="scrollCarrusel(1)">❯</button>
+            </div>
+
+            <h2 class="prod-titulo">${prod.nombre}</h2>
+            <div class="prod-precio">$${Number(prod.precio).toLocaleString('es-CO')} COP</div>
+            <p class="prod-descripcion">${prod.descripcion || ''}</p>
+
+            <hr class="prod-separador">
+
+            <label for="selVariante">Elige tu tono:</label>
+            <select id="selVariante">${variantesHtml}</select>
+
+            <div class="compra-row">
+                <div class="cantidad-control">
+                    <button type="button" class="btn-cant" onclick="cambiarCant(-1)">−</button>
+                    <input type="number" id="inpCant" class="inp-cant" value="1" readonly>
+                    <button type="button" class="btn-cant" onclick="cambiarCant(1)">+</button>
+                </div>
+                <button type="button" class="btn-agregar-beige" onclick="agregarItem()">AÑADIR AL CARRITO</button>
+            </div>
+
+            <div class="envio-box">
+                <svg class="truck-icon" viewBox="0 0 24 24">
+                    <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-7.5l1.96 2.5H17V11h2.5zm-1 7.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                </svg>
+                <div><strong>ENVÍO GRATIS</strong> en compras superiores a <strong>$120.000</strong>. Envíos a toda Colombia.</div>
+            </div>
+
+            <div class="pagos-container">
+                <div class="pagos-titulo">Transfiere o paga con tu cuenta:</div>
+                <div style="font-size: 11px; color: #444; font-weight: 700;">💳 Daviplata | Nequi | Lulo Bank | Breve | Todos los bancos</div>
+            </div>
+        </div>
+    </div>`;
+
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    setTimeout(() => {
         const carrusel = document.getElementById("carruselImagenes");
         if (carrusel) {
             carrusel.scrollLeft = 0;
-            carrusel.focus();
+            carrusel.addEventListener("scroll", actualizarFlechasModal);
+            actualizarFlechasModal();
         }
-        actualizarFlechas();
-    });
-    setTimeout(actualizarFlechas, 100);
+    }, 50);
 }
 
 function cerrarModal() { 
-    document.getElementById("modalProducto").style.display = "none"; 
+    const modal = document.getElementById("modalProductoGlobal");
+    if (modal) modal.remove();
     renderizarCatalogo(productosGlobal); 
 }
 
-// --- CARRUSEL Y NAVEGACIÓN ---
-const carrusel = document.getElementById("carruselImagenes");
-const arrowLeft = document.getElementById("arrowLeft");
-const arrowRight = document.getElementById("arrowRight");
-
 function scrollCarrusel(direccion) {
+    const carrusel = document.getElementById("carruselImagenes");
+    if (!carrusel) return;
     const paso = carrusel.clientWidth;
     carrusel.scrollBy({ left: direccion * paso, behavior: "smooth" });
 }
 
-function actualizarFlechas() {
-    if (!carrusel) return;
+function actualizarFlechasModal() {
+    const carrusel = document.getElementById("carruselImagenes");
+    const arrowLeft = document.getElementById("arrowLeft");
+    const arrowRight = document.getElementById("arrowRight");
+    if (!carrusel || !arrowLeft || !arrowRight) return;
+
     const scrollLeft = carrusel.scrollLeft;
     const maxScroll = carrusel.scrollWidth - carrusel.clientWidth;
 
@@ -665,153 +594,113 @@ function actualizarFlechas() {
     else arrowRight.classList.remove("visible");
 }
 
-carrusel.addEventListener("scroll", actualizarFlechas);
-window.addEventListener("resize", actualizarFlechas);
-
-// --- TECLADO GLOBAL ---
-document.addEventListener("keydown", (e) => {
-    const modalProductoVisible = document.getElementById("modalProducto").style.display === "flex";
-    const modalCarritoVisible = document.getElementById("modalCarrito").style.display === "flex";
-    const lightboxVisible = document.getElementById("lightboxZoom").style.display === "block";
-
-    if (e.key === "Escape") {
-        if (lightboxVisible) { cerrarZoom(); return; }
-        if (modalCarritoVisible) { 
-            cerrarCarrito(); 
-            if (modalProductoVisible) document.getElementById("modalContent").focus();
-            return; 
-        }
-        if (modalProductoVisible) { cerrarModal(); return; }
-    }
-
-    if (modalProductoVisible && !lightboxVisible && !modalCarritoVisible) {
-        const paso = carrusel.clientWidth;
-        const modalContent = document.getElementById("modalContent");
-
-        if (e.key === "ArrowRight") { e.preventDefault(); carrusel.scrollBy({ left: paso, behavior: "smooth" }); } 
-        else if (e.key === "ArrowLeft") { e.preventDefault(); carrusel.scrollBy({ left: -paso, behavior: "smooth" }); } 
-        else if (e.key === "ArrowDown") { e.preventDefault(); modalContent.scrollBy({ top: 100, behavior: "smooth" }); } 
-        else if (e.key === "ArrowUp") { e.preventDefault(); modalContent.scrollBy({ top: -100, behavior: "smooth" }); } 
-        else if (e.key === "Enter") {
-            if (document.activeElement === carrusel) {
-                e.preventDefault();
-                const imgs = Array.from(carrusel.querySelectorAll("img"));
-                const scrollPos = carrusel.scrollLeft;
-                const index = Math.round(scrollPos / carrusel.clientWidth);
-                if (imgs[index]) abrirZoom(imgs[index].src);
-            }
-        }
-    }
-});
-
-// --- SWIPE CERRAR MODALES ---
-function habilitarSwipeCerrarModal(idContenedor, callbackCerrar, selectoresIgnorar = []) {
-    const contenedor = document.getElementById(idContenedor);
-    if (!contenedor) return;
-
-    let xInicial = 0, yInicial = 0;
-
-    contenedor.addEventListener('touchstart', e => {
-        if (selectoresIgnorar.some(selector => e.target.closest(selector))) return;
-        xInicial = e.changedTouches[0].screenX; yInicial = e.changedTouches[0].screenY;
-    }, { passive: true });
-
-    contenedor.addEventListener('touchend', e => {
-        if (selectoresIgnorar.some(selector => e.target.closest(selector))) return;
-        let xFinal = e.changedTouches[0].screenX, yFinal = e.changedTouches[0].screenY;
-        let diferenciaX = xFinal - xInicial, diferenciaY = yFinal - yInicial;
-
-        if (diferenciaX > 70 && Math.abs(diferenciaX) > Math.abs(diferenciaY)) { callbackCerrar(); }
-    }, { passive: true });
-}
-
-habilitarSwipeCerrarModal('modalProducto', cerrarModal, ['.carrusel-container', 'select', '.cantidad-control']);
-habilitarSwipeCerrarModal('modalCarrito', cerrarCarrito, ['.cant-contros-cart']);
-
 // --- LIGHTBOX Y ZOOM ---
-let scale = 1, pointX = 0, pointY = 0, startX = 0, startY = 0, initialDist = 0, initialScale = 1, isTouching = false;
-const viewport = document.getElementById("zoomViewport");
-const imgTarget = document.getElementById("imgZoomTarget");
-const ZOOM_NIVEL_HOVER = 3.2;
-
-function updateTransform() {
-    if (scale < 1) { scale = 1; pointX = 0; pointY = 0; }
-    imgTarget.style.transform = `translate3d(${pointX}px, ${pointY}px, 0px) scale(${scale})`;
-}
-
 function abrirZoom(urlImagen) {
-    imgTarget.src = urlImagen;
-    scale = 1; pointX = 0; pointY = 0;
-    updateTransform();
-    document.getElementById("lightboxZoom").style.display = "block";
+    const zoomAnt = document.getElementById("lightboxZoomGlobal");
+    if (zoomAnt) zoomAnt.remove();
+
+    const zoomHTML = `
+    <div class="lightbox-overlay" id="lightboxZoomGlobal" onclick="cerrarZoom()">
+        <button type="button" class="lightbox-cerrar" onclick="cerrarZoom()">✕</button>
+        <div class="lightbox-viewport" id="zoomViewport">
+            <img id="imgZoomTarget" src="${urlImagen}" alt="Foto ampliada">
+        </div>
+        <div class="lightbox-instruccion">Toca para zoom / Pellizca / Desliza para salir</div>
+    </div>`;
+
+    document.body.insertAdjacentHTML('beforeend', zoomHTML);
 }
 
-function cerrarZoom() { document.getElementById("lightboxZoom").style.display = "none"; }
+function cerrarZoom() { 
+    const zoom = document.getElementById("lightboxZoomGlobal");
+    if (zoom) zoom.remove();
+}
 
-viewport.addEventListener('mousemove', (e) => {
-    if (isTouching) return;
-    const rect = viewport.getBoundingClientRect();
-    const x = e.clientX - rect.left, y = e.clientY - rect.top;
-    scale = ZOOM_NIVEL_HOVER;
-    pointX = (rect.width / 2 - x) * 2.2;
-    pointY = (rect.height / 2 - y) * 2.2;
-    updateTransform();
-});
+// --- CARRITO ---
+function abrirCarrito() {
+    const cartAnt = document.getElementById("modalCarritoGlobal");
+    if (cartAnt) cartAnt.remove();
 
-viewport.addEventListener('mouseleave', () => {
-    if (isTouching) return;
-    scale = 1; pointX = 0; pointY = 0; updateTransform();
-});
+    const carrito = JSON.parse(localStorage.getItem(CLAVE_CARRITO) || "[]");
+    let html = ""; let totalPagar = 0; let cantTotal = 0;
 
-let touchStartTime = 0, isTap = false, touchStartX = 0, touchStartY = 0;
-
-viewport.addEventListener('touchstart', (e) => {
-    isTouching = true;
-    if (e.touches.length === 1) {
-        isTap = true; touchStartTime = Date.now();
-        touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY;
-        if (scale > 1) { startX = e.touches[0].clientX - pointX; startY = e.touches[0].clientY - pointY; }
-    } else if (e.touches.length === 2) {
-        isTap = false;
-        initialDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-        initialScale = scale;
+    if (carrito.length === 0) {
+        html = '<div class="carrito-vacio">Tu carrito está vacío.</div>';
+    } else {
+        carrito.forEach((item, index) => {
+            const subtotal = item.precio * item.cantidad;
+            totalPagar += subtotal; 
+            cantTotal += item.cantidad;
+            
+            html += `
+            <div class="item-fila">
+                <div style="flex:1;">
+                    <span class="item-nombre" style="display:block;">${item.nombre}</span>
+                    <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+                        <div class="cant-contros-cart">
+                            <button type="button" class="btn-cant-cart" onclick="modificarCantidadGlobal(${index}, -1)">−</button>
+                            <span class="num-cant-cart">${item.cantidad}</span>
+                            <button type="button" class="btn-cant-cart" onclick="modificarCantidadGlobal(${index}, 1)">+</button>
+                        </div>
+                        <button type="button" class="btn-eliminar-item" onclick="eliminarProductoDirectoGlobal(${index})" title="Eliminar producto">🗑️</button>
+                    </div>
+                </div>
+                <span class="item-precio">$${Number(item.precio).toLocaleString("es-CO")}</span>
+            </div>`;
+        });
     }
-}, { passive: false });
 
-viewport.addEventListener('touchmove', (e) => {
-    if (e.touches.length === 1) {
-        const moveX = e.touches[0].clientX, moveY = e.touches[0].clientY;
-        if (Math.abs(moveX - touchStartX) > 10 || Math.abs(moveY - touchStartY) > 10) isTap = false;
-        if (scale > 1) { e.preventDefault(); pointX = moveX - startX; pointY = moveY - startY; updateTransform(); }
-        else { e.preventDefault(); }
-    } else if (e.touches.length === 2) {
-        isTap = false; e.preventDefault();
-        const dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-        scale = initialScale * (dist / initialDist);
-        if (scale < 1) scale = 1;
-        updateTransform();
+    const porcentajeEnvio = Math.min((totalPagar / META_ENVIO) * 100, 100);
+    let txtEnvio = "";
+    if (totalPagar >= META_ENVIO) {
+        txtEnvio = "🎉 ¡Felicidades! Tienes <strong>ENVÍO GRATUITO</strong>";
+    } else {
+        const falta = META_ENVIO - totalPagar;
+        txtEnvio = `¡Agrega <strong>$${falta.toLocaleString("es-CO")}</strong> más y consigue envío gratuito!`;
     }
-}, { passive: false });
 
-viewport.addEventListener('touchend', (e) => {
-    if (e.changedTouches.length === 1 && e.touches.length === 0) {
-        const touchEndTime = Date.now();
-        const endX = e.changedTouches[0].clientX, endY = e.changedTouches[0].clientY;
-        if (isTap && (touchEndTime - touchStartTime < 300)) {
-            scale = (scale === 1) ? 2.5 : 1; pointX = 0; pointY = 0; updateTransform();
-        } else if (scale === 1 && !isTap) {
-            if (Math.abs(endX - touchStartX) > 80 || Math.abs(endY - touchStartY) > 80) cerrarZoom();
-        }
-    }
-    if (e.touches.length === 0) {
-        isTouching = false;
-        if (scale <= 1.05) { scale = 1; pointX = 0; pointY = 0; updateTransform(); }
-    }
-});
+    const carritoHTML = `
+    <div class="modal-carrito-overlay" id="modalCarritoGlobal">
+        <div class="carrito-container">
+            <button type="button" class="btn-cerrar-cart" onclick="cerrarCarrito()">✕</button>
+            
+            <div class="header-carrito">
+                <span style="font-size: 18px;">🛒</span>
+                <span class="header-carrito-txt">TU CARRITO DE COMPRAS</span>
+            </div>
 
-// --- LÓGICA DE CARRITO Y COMPRA ---
+            <div class="envio-gratis-bar-container">
+                <div class="envio-gratis-txt">${txtEnvio}</div>
+                <div class="envio-gratis-progress">
+                    <div class="envio-gratis-fill" style="width: ${porcentajeEnvio}%;"></div>
+                </div>
+            </div>
+
+            <div id="listaItemsModal">${html}</div>
+
+            <div class="total-fila">
+                <span>TOTAL</span>
+                <span id="totalPagarModal">$${totalPagar.toLocaleString("es-CO")} COP</span>
+            </div>
+
+            <button type="button" class="btn-realizar-compra" onclick="enviarPedido()">
+                REALIZAR COMPRA
+            </button>
+        </div>
+    </div>`;
+
+    document.body.insertAdjacentHTML('beforeend', carritoHTML);
+    actualizarBadges(cantTotal);
+}
+
+function cerrarCarrito() {
+    const cart = document.getElementById("modalCarritoGlobal");
+    if (cart) cart.remove();
+}
+
 function cambiarCant(d) {
     const el = document.getElementById("inpCant");
+    if (!el) return;
     let v = +el.value + d;
     el.value = v < 1 ? 1 : v;
 }
@@ -831,61 +720,25 @@ function agregarItem() {
 
     localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito));
     cerrarModal();
-    cargarCarrito();
     abrirCarrito();
 }
 
-function abrirCarrito() { document.getElementById("modalCarrito").style.display = "flex"; }
-function cerrarCarrito() { document.getElementById("modalCarrito").style.display = "none"; }
-
-function cargarCarrito() {
-    const carrito = JSON.parse(localStorage.getItem(CLAVE_CARRITO) || "[]");
-    const contenedor = document.getElementById("listaItems");
-    let html = ""; let totalPagar = 0; let cantTotal = 0;
-
-    if (carrito.length === 0) {
-        contenedor.innerHTML = '<div class="carrito-vacio">Tu carrito está vacío.</div>';
-        document.getElementById("totalPagar").innerText = "$0 COP";
-        actualizarBadges(0);
-        actualizarBarraEnvio(0);
-        return;
+function modificarCantidadGlobal(index, cambio) {
+    let carrito = JSON.parse(localStorage.getItem(CLAVE_CARRITO) || "[]");
+    if (carrito[index]) {
+        carrito[index].cantidad += cambio;
+        if (carrito[index].cantidad <= 0) carrito.splice(index, 1);
+        localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito));
+        abrirCarrito(); // Recarga el carrito dinámicamente
     }
-
-    carrito.forEach((item, index) => {
-        const subtotal = item.precio * item.cantidad;
-        totalPagar += subtotal; 
-        cantTotal += item.cantidad;
-        
-        html += `
-        <div class="item-fila">
-            <div style="flex:1;">
-                <span class="item-nombre" style="display:block;">${item.nombre}</span>
-                <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
-                    <div class="cant-contros-cart">
-                        <button type="button" class="btn-cant-cart" onclick="modificarCantidad(${index}, -1)">−</button>
-                        <span class="num-cant-cart">${item.cantidad}</span>
-                        <button type="button" class="btn-cant-cart" onclick="modificarCantidad(${index}, 1)">+</button>
-                    </div>
-                    <button type="button" class="btn-eliminar-item" onclick="eliminarProductoDirecto(${index})" title="Eliminar producto">🗑️</button>
-                </div>
-            </div>
-            <span class="item-precio">$${Number(item.precio).toLocaleString("es-CO")}</span>
-        </div>`;
-    });
-
-    contenedor.innerHTML = html;
-    document.getElementById("totalPagar").innerText = `$${totalPagar.toLocaleString("es-CO")} COP`;
-    actualizarBadges(cantTotal);
-    actualizarBarraEnvio(totalPagar);
 }
 
-// ELIMINAR PRODUCTO COMPLETO DESDE LA CANECA
-function eliminarProductoDirecto(index) {
+function eliminarProductoDirectoGlobal(index) {
     let carrito = JSON.parse(localStorage.getItem(CLAVE_CARRITO) || "[]");
     if (carrito[index]) {
         carrito.splice(index, 1);
         localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito));
-        cargarCarrito();
+        abrirCarrito();
     }
 }
 
@@ -895,31 +748,6 @@ function actualizarBadges(cantidad) {
         cantidad = carrito.reduce((acc, i) => acc + i.cantidad, 0);
     }
     document.querySelectorAll('.badgeCantGlobal').forEach(el => el.innerText = cantidad);
-}
-
-function actualizarBarraEnvio(total) {
-    const txt = document.getElementById("txtEnvioGratis");
-    const fill = document.getElementById("barEnvioGratis");
-
-    if (total >= META_ENVIO) {
-        txt.innerHTML = "🎉 ¡Felicidades! Tienes <strong>ENVÍO GRATUITO</strong>";
-        fill.style.width = "100%";
-    } else {
-        const falta = META_ENVIO - total;
-        const porcentaje = Math.min((total / META_ENVIO) * 100, 100);
-        txt.innerHTML = `¡Agrega <strong>$${falta.toLocaleString("es-CO")}</strong> más y consigue envío gratuito!`;
-        fill.style.width = `${porcentaje}%`;
-    }
-}
-
-function modificarCantidad(index, cambio) {
-    let carrito = JSON.parse(localStorage.getItem(CLAVE_CARRITO) || "[]");
-    if (carrito[index]) {
-        carrito[index].cantidad += cambio;
-        if (carrito[index].cantidad <= 0) carrito.splice(index, 1);
-        localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito));
-        cargarCarrito();
-    }
 }
 
 function enviarPedido() {
@@ -942,13 +770,13 @@ function enviarPedido() {
 
     window.open(`https://wa.me/${TELEFONO_WA}?text=${encodeURIComponent(msj)}`, "_blank");
     localStorage.removeItem(CLAVE_CARRITO);
-    cargarCarrito();
     cerrarCarrito();
+    actualizarBadges(0);
 }
 
 // Inicializar la carga inmediata
 fetchData();
-cargarCarrito();
+actualizarBadges();
 </script>
 
 </body>
