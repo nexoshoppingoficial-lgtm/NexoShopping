@@ -6,48 +6,60 @@
     <title>NexoShopping - Catálogo</title>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; }
-        
+        * { 
+            box-sizing: border-box; 
+            /* Ocultar scrollbars en todos los elementos */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE y Edge */
+        }
+
+        /* Ocultar scrollbars en navegadores basados en WebKit (Chrome, Safari, Edge) */
+        ::-webkit-scrollbar {
+            display: none;
+            width: 0px;
+            height: 0px;
+            background: transparent;
+        }
+
         html, body { 
             margin: 0; 
             padding: 0; 
             font-family: 'Lato', sans-serif; 
             background: #fdfbf7; 
             color: #4a3f35;
+            width: 100%;
+            height: 100%;
             overflow-x: hidden;
-            scrollbar-width: none; /* Ocultar scrollbar en Firefox */
-            -ms-overflow-style: none; /* Ocultar scrollbar en IE/Edge */
         }
 
-        /* --- DESLIZADORES (SCROLLBARS) OCULTOS Y ULTRA SUTILES --- */
-        ::-webkit-scrollbar {
-            width: 0px;
-            height: 0px;
-            background: transparent;
-        }
-
-        /* --- GRILLA Y CENTRADO DE PRODUCTOS (CORRECCIÓN ESPACIO EN COMPUTADOR) --- */
+        /* --- GRILLA RESPONSIVA ADAPTABLE A GOOGLE SITES --- */
         #loading {
             text-align: center;
-            padding: 40px;
+            padding: 20px;
             font-size: 14px;
             color: #888;
             letter-spacing: 1px;
         }
 
         .catalogo-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center; /* Centrar para eliminar huecos a la derecha */
-            gap: 20px;
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        @media (min-width: 600px) {
+            .catalogo-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 20px;
+                padding: 15px;
+            }
         }
 
         .card-atenea {
             width: 100%;
-            max-width: 240px; /* Tamaño fijo uniforme para la tarjeta */
             background: #faf6f0;
             border: 1px solid #f0e6d8;
             border-radius: 4px;
@@ -85,22 +97,22 @@
 
         .card-atenea .img-container:hover .img-hover-preview { opacity: 1; }
 
-        .card-atenea .info-previa { padding: 14px 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-atenea .info-previa { padding: 12px 10px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
 
         .card-atenea .titulo-previa {
-            font-size: 13px; font-weight: 700; color: #333333; letter-spacing: 0.8px; margin-bottom: 6px; text-transform: uppercase; cursor: pointer;
+            font-size: 12px; font-weight: 700; color: #333333; letter-spacing: 0.5px; margin-bottom: 6px; text-transform: uppercase; cursor: pointer;
         }
 
         .card-atenea .precio-previa { 
-            font-size: 13px; font-weight: 700; color: #4a3f35; margin-bottom: 12px; 
+            font-size: 12px; font-weight: 700; color: #4a3f35; margin-bottom: 10px; 
         }
 
         .btn-ver-pedido-card {
             width: 100%; background: #f5f0eb; color: #4a3f35;
-            border: 1px solid #e3d7cb; border-radius: 4px; padding: 9px 12px;
-            font-size: 11px; font-weight: 700; letter-spacing: 1px;
+            border: 1px solid #e3d7cb; border-radius: 4px; padding: 8px 10px;
+            font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
             text-transform: uppercase; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
             transition: all 0.2s ease;
         }
 
@@ -108,7 +120,7 @@
 
         .badge-flotante {
             background: #4a3f35; color: #ffffff; border-radius: 50%;
-            padding: 2px 6px; font-size: 10px; font-weight: 700;
+            padding: 2px 6px; font-size: 9px; font-weight: 700;
         }
 
         /* --- MODALES Y OVERLAYS --- */
@@ -123,10 +135,7 @@
             background: #ffffff; width: 90vw; max-width: 580px; max-height: 90vh;
             border-radius: 4px; overflow-y: auto; position: relative; padding: 24px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.15); color: #4a4a4a; outline: none;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
         }
-        .modal-content::-webkit-scrollbar { display: none; }
 
         /* Carrusel Wrapper */
         .carrusel-wrapper { position: relative; width: 100%; margin-bottom: 16px; }
@@ -136,10 +145,7 @@
             display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
             gap: 8px; border-radius: 4px; background: #fdfbf7;
             outline: none; scroll-behavior: smooth;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
         }
-        .carrusel-container::-webkit-scrollbar { display: none; }
 
         .carrusel-container img {
             width: 100%; height: 100%; aspect-ratio: 1 / 1;
@@ -147,7 +153,7 @@
             cursor: zoom-in; background: #ffffff; border-radius: 4px;
         }
 
-        /* FLECHAS TRASLÚCIDAS SUTILES */
+        /* FLECHAS ULTRA TRASLÚCIDAS Y SUTILES */
         .carrusel-arrow {
             position: absolute; top: 50%; transform: translateY(-50%);
             width: 28px; height: 28px; 
@@ -209,10 +215,7 @@
             border: 1px solid #f0e6d8; border-radius: 6px; padding: 24px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.12); position: relative;
             max-height: 85vh; overflow-y: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
         }
-        .carrito-container::-webkit-scrollbar { display: none; }
 
         .header-carrito { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid #e3d7cb; padding-bottom: 10px; }
         .header-carrito-txt { font-size: 14px; font-weight: 700; letter-spacing: 1.5px; color: #4a3f35; text-transform: uppercase; }
@@ -261,6 +264,7 @@
         .btn-cant-cart { width: 26px; height: 26px; background: transparent; border: none; cursor: pointer; font-weight: bold; color: #4a4a4a; }
         .num-cant-cart { width: 28px; text-align: center; font-size: 12px; font-weight: 700; color: #4a4a4a; border-left: 1px solid #eeeeee; border-right: 1px solid #eeeeee; }
         
+        /* BOTÓN DE CANECA PARA ELIMINAR */
         .btn-eliminar-item {
             background: transparent;
             border: none;
@@ -383,7 +387,7 @@ const CLAVE_CARRITO = "carrito_global_tienda";
 const TELEFONO_WA = "573212295023";
 const META_ENVIO = 120000;
 
-// Descargar y procesar los datos
+// Descargar y procesar los datos de la hoja en tiempo real
 async function fetchData() {
     try {
         const response = await fetch(CSV_URL);
@@ -392,7 +396,7 @@ async function fetchData() {
         
         let productosProcesados = parseCSV(csvText);
 
-        // FILTRADO AUTOMÁTICO POR URL SI SE ESPECIFICA CATEGORÍA
+        // FILTRADO AUTOMÁTICO POR URL SI SE ESPECIFICA CATEGORÍA (Ejemplo: ?categoria=BASES)
         const urlParams = new URLSearchParams(window.location.search);
         const categoriaFiltro = urlParams.get('categoria') || urlParams.get('cat');
 
@@ -497,7 +501,7 @@ function parseCSV(text) {
     return items;
 }
 
-// Renderizar tarjetas estilo Atenea
+// Renderizar tarjetas estilo Atenea Makeup
 function renderizarCatalogo(productos) {
     const grid = document.getElementById('catalogoGrid');
     grid.innerHTML = '';
@@ -540,7 +544,7 @@ function renderizarCatalogo(productos) {
     actualizarBadges();
 }
 
-// Abrir modal asegurando la primera imagen como principal
+// Abrir modal con los datos del producto seleccionado
 function abrirModalPorIndice(index) {
     const prod = productosGlobal[index];
     if (!prod) return;
@@ -565,21 +569,10 @@ function abrirModalPorIndice(index) {
         select.appendChild(opt);
     }
 
-    // Llenar carrusel asegurando que la imagen principal sea siempre la primera
+    // Llenar carrusel
     const carrusel = document.getElementById("carruselImagenes");
     carrusel.innerHTML = '';
-
-    let imgs = [];
-    if (prod.imagenes && prod.imagenes.length > 0) {
-        imgs = [...prod.imagenes];
-        // Garantizar que la foto del catálogo principal esté en la posición 0
-        if (imgs.includes(prod.imagen)) {
-            imgs = imgs.filter(img => img !== prod.imagen);
-            imgs.unshift(prod.imagen);
-        }
-    } else {
-        imgs = [prod.imagen];
-    }
+    const imgs = (prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes : [prod.imagen];
 
     imgs.forEach(imgUrl => {
         const img = document.createElement('img');
@@ -588,7 +581,6 @@ function abrirModalPorIndice(index) {
         carrusel.appendChild(img);
     });
 
-    carrusel.scrollLeft = 0; // Reiniciar posición del scroll al inicio
     document.getElementById("inpCant").value = 1;
     abrirModal();
 }
@@ -597,10 +589,7 @@ function abrirModal() {
     document.getElementById("modalProducto").style.display = "flex"; 
     requestAnimationFrame(() => {
         const carrusel = document.getElementById("carruselImagenes");
-        if (carrusel) {
-            carrusel.scrollLeft = 0;
-            carrusel.focus();
-        }
+        if (carrusel) carrusel.focus();
         actualizarFlechas();
     });
     setTimeout(actualizarFlechas, 100);
@@ -844,6 +833,7 @@ function cargarCarrito() {
     actualizarBarraEnvio(totalPagar);
 }
 
+// ELIMINAR PRODUCTO COMPLETO DESDE LA CANECA
 function eliminarProductoDirecto(index) {
     let carrito = JSON.parse(localStorage.getItem(CLAVE_CARRITO) || "[]");
     if (carrito[index]) {
