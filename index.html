@@ -133,17 +133,30 @@
             align-items: center; justify-content: center; padding: 15px;
         }
 
+        /* VENTANA EMERGENTE CENTRADA Y MÁS GRANDE */
         .modal-content {
-            background: #ffffff; width: 90vw; max-width: 580px; max-height: 90vh;
-            border-radius: 4px; overflow-y: auto; position: relative; padding: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15); color: #4a4a4a; outline: none;
+            background: #ffffff; 
+            width: 92vw; 
+            max-width: 680px; 
+            max-height: 90vh;
+            border-radius: 6px; 
+            overflow-y: auto; 
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            padding: 28px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.2); 
+            color: #4a4a4a; 
+            outline: none;
+            margin: 0;
         }
 
         /* Carrusel Wrapper */
         .carrusel-wrapper { position: relative; width: 100%; margin-bottom: 16px; }
 
         .carrusel-container {
-            width: 100%; aspect-ratio: 1 / 1; max-height: 380px;
+            width: 100%; aspect-ratio: 1 / 1; max-height: 420px;
             display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
             gap: 8px; border-radius: 4px; background: #fdfbf7;
             outline: none; scroll-behavior: smooth;
