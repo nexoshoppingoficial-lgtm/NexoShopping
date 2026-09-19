@@ -8,10 +8,12 @@
     <style>
         * { 
             box-sizing: border-box; 
-            scrollbar-width: none; 
-            -ms-overflow-style: none; 
+            /* Ocultar scrollbars en todos los elementos */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE y Edge */
         }
 
+        /* Ocultar scrollbars en navegadores basados en WebKit (Chrome, Safari, Edge) */
         ::-webkit-scrollbar {
             display: none;
             width: 0px;
@@ -122,6 +124,170 @@
             background: #4a3f35; color: #ffffff; border-radius: 50%;
             padding: 2px 6px; font-size: 9px; font-weight: 700;
         }
+
+        /* --- MODALES Y OVERLAYS --- */
+        .modal-overlay, .modal-carrito-overlay {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(2px); z-index: 99999;
+            align-items: center; justify-content: center; padding: 15px;
+        }
+
+        .modal-content {
+            background: #ffffff; width: 90vw; max-width: 580px; max-height: 90vh;
+            border-radius: 4px; overflow-y: auto; position: relative; padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); color: #4a4a4a; outline: none;
+        }
+
+        /* Carrusel Wrapper */
+        .carrusel-wrapper { position: relative; width: 100%; margin-bottom: 16px; }
+
+        .carrusel-container {
+            width: 100%; aspect-ratio: 1 / 1; max-height: 380px;
+            display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+            gap: 8px; border-radius: 4px; background: #fdfbf7;
+            outline: none; scroll-behavior: smooth;
+        }
+
+        .carrusel-container img {
+            width: 100%; height: 100%; aspect-ratio: 1 / 1;
+            object-fit: contain; flex-shrink: 0; scroll-snap-align: start;
+            cursor: zoom-in; background: #ffffff; border-radius: 4px;
+        }
+
+        /* FLECHAS ULTRA TRASLÚCIDAS Y SUTILES */
+        .carrusel-arrow {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: 28px; height: 28px; 
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(2px); 
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #4a3f35; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 12px;
+            cursor: pointer; z-index: 5; opacity: 0;
+            transition: opacity 0.2s ease, background 0.2s ease; pointer-events: none;
+        }
+
+        .carrusel-wrapper:hover .carrusel-arrow.visible { opacity: 0.7; pointer-events: auto; }
+        @media (hover: none) { .carrusel-arrow.visible { opacity: 0.7; pointer-events: auto; } }
+        .carrusel-arrow:hover { background: rgba(255, 255, 255, 0.6); opacity: 1 !important; }
+        .carrusel-arrow.left { left: 8px; }
+        .carrusel-arrow.right { right: 8px; }
+
+        /* Lightbox / Zoom */
+        .lightbox-overlay {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.95);
+            z-index: 100000; touch-action: none; user-select: none;
+            -webkit-user-select: none; overflow: hidden;
+        }
+
+        .lightbox-viewport {
+            width: 100%; height: 100%; display: flex; align-items: center;
+            justify-content: center; position: relative; overflow: hidden;
+        }
+
+        .lightbox-viewport img {
+            max-width: 90vw; max-height: 85vh; object-fit: contain;
+            transform-origin: center center; will-change: transform;
+            transition: transform 0.08s ease-out; pointer-events: none;
+        }
+
+        .lightbox-cerrar {
+            position: fixed; top: 15px; right: 20px;
+            background: rgba(255, 255, 255, 0.12); color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50%;
+            width: 38px; height: 38px; font-size: 18px; font-weight: bold;
+            cursor: pointer; z-index: 100002; display: flex; align-items: center;
+            justify-content: center; backdrop-filter: blur(4px); transition: background 0.2s ease;
+        }
+        .lightbox-cerrar:hover { background: rgba(255, 255, 255, 0.25); }
+
+        .lightbox-instruccion {
+            position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.75); font-size: 11px; letter-spacing: 0.8px;
+            text-transform: uppercase; pointer-events: none; z-index: 100001;
+            background: rgba(0, 0, 0, 0.4); padding: 6px 16px; border-radius: 20px;
+            backdrop-filter: blur(4px); white-space: nowrap; border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Carrito */
+        .carrito-container { 
+            width: 100%; max-width: 440px; background: #faf6f0;
+            border: 1px solid #f0e6d8; border-radius: 6px; padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12); position: relative;
+            max-height: 85vh; overflow-y: auto;
+        }
+
+        .header-carrito { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid #e3d7cb; padding-bottom: 10px; }
+        .header-carrito-txt { font-size: 14px; font-weight: 700; letter-spacing: 1.5px; color: #4a3f35; text-transform: uppercase; }
+
+        .envio-gratis-bar-container { background: #ffffff; border: 1px solid #e0e0e0; border-radius: 6px; padding: 12px 14px; margin-bottom: 20px; text-align: center; }
+        .envio-gratis-txt { font-size: 12px; color: #4a3f35; margin-bottom: 8px; }
+        .envio-gratis-progress { width: 100%; height: 6px; background: #eeeeee; border-radius: 10px; overflow: hidden; }
+        .envio-gratis-fill { height: 100%; background: #4a3f35; width: 0%; transition: width 0.3s ease; }
+
+        .btn-cerrar, .btn-cerrar-cart {
+            position: absolute; top: 12px; right: 14px; background: #f5f0eb;
+            border: none; border-radius: 50%; width: 28px; height: 28px;
+            font-size: 14px; font-weight: bold; color: #666; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; z-index: 10;
+        }
+
+        .prod-titulo { font-size: 20px; font-weight: 400; color: #333333; margin: 0 0 4px 0; letter-spacing: 0.5px; text-transform: uppercase; }
+        .prod-precio { font-size: 16px; font-weight: 700; color: #4a4a4a; margin-bottom: 8px; }
+        .prod-descripcion { font-size: 13px; font-weight: 400; color: #666666; line-height: 1.5; margin-bottom: 16px; }
+        .prod-separador { border: none; border-top: 1px solid #eeeeee; margin: 16px 0; }
+        label { display: block; font-size: 11px; font-weight: 700; color: #666666; margin-bottom: 6px; }
+
+        select { width: 100%; padding: 9px 10px; border: 1px solid #cccccc; border-radius: 0px; margin-bottom: 16px; font-size: 12px; outline: none; background: #ffffff; color: #4a4a4a; }
+
+        .compra-row { display: flex; gap: 10px; align-items: center; margin-bottom: 24px; }
+        .cantidad-control { display: flex; align-items: center; border: 1px solid #cccccc; height: 42px; width: 110px; background: #ffffff; }
+        .btn-cant { width: 34px; height: 100%; background: transparent; border: none; cursor: pointer; font-size: 14px; color: #4a4a4a; }
+        .inp-cant { width: 42px; height: 100%; border: none; border-left: 1px solid #eeeeee; border-right: 1px solid #eeeeee; text-align: center; font-weight: bold; font-size: 13px; color: #4a4a4a; }
+
+        .btn-agregar-beige { 
+            flex: 1; height: 42px; background: #f5f0eb; color: #4a3f35; border: 1px solid #e3d7cb; 
+            font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s ease;
+        }
+        .btn-agregar-beige:hover { background: #ebdcd0; }
+
+        .envio-box { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; color: #666666; line-height: 1.4; margin-bottom: 16px; }
+        .truck-icon { width: 20px; height: 20px; fill: #000000; flex-shrink: 0; margin-top: 1px; }
+
+        .pagos-container { border: 1px solid #e5e5e5; border-radius: 8px; padding: 12px; background: #fafafa; }
+        .pagos-titulo { font-size: 11px; color: #666666; margin-bottom: 4px; }
+
+        .item-fila { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #eee8df; font-size: 13px; gap: 10px; }
+        .item-nombre { font-weight: 400; color: #333333; letter-spacing: 0.5px; text-transform: uppercase; font-size: 12px; }
+        .item-precio { color: #333333; font-weight: 700; font-size: 13px; }
+        .cant-contros-cart { display: flex; align-items: center; border: 1px solid #cccccc; background: #ffffff; }
+        .btn-cant-cart { width: 26px; height: 26px; background: transparent; border: none; cursor: pointer; font-weight: bold; color: #4a4a4a; }
+        .num-cant-cart { width: 28px; text-align: center; font-size: 12px; font-weight: 700; color: #4a4a4a; border-left: 1px solid #eeeeee; border-right: 1px solid #eeeeee; }
+        
+        /* BOTÓN DE CANECA PARA ELIMINAR */
+        .btn-eliminar-item {
+            background: transparent;
+            border: none;
+            color: #a38c78;
+            cursor: pointer;
+            font-size: 15px;
+            padding: 4px 6px;
+            transition: color 0.2s ease;
+        }
+        .btn-eliminar-item:hover { color: #d9534f; }
+
+        .total-fila { display: flex; justify-content: space-between; font-size: 15px; font-weight: 700; margin-top: 20px; padding-top: 15px; border-top: 1px solid #e3d7cb; color: #333333; letter-spacing: 0.5px; }
+        
+        .btn-realizar-compra { 
+            width: 100%; padding: 14px; background: #4a3f35; color: #ffffff; border: none; 
+            border-radius: 2px; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; 
+            text-transform: uppercase; cursor: pointer; margin-top: 16px; transition: background 0.2s ease; 
+            display: flex; align-items: center; justify-content: center; 
+        }
+        .btn-realizar-compra:hover { background: #332b24; }
+        .carrito-vacio { text-align: center; color: #888888; padding: 24px 0; font-size: 13px; letter-spacing: 0.5px; }
     </style>
 </head>
 <body>
@@ -129,6 +295,88 @@
 <!-- CONTENEDOR PRINCIPAL -->
 <div id="loading">Cargando productos desde Google Sheets...</div>
 <div id="catalogoGrid" class="catalogo-grid"></div>
+
+<!-- MODAL PRODUCTO -->
+<div class="modal-overlay" id="modalProducto">
+    <div class="modal-content" id="modalContent" tabindex="0">
+        <button type="button" class="btn-cerrar" onclick="cerrarModal()">✕</button>
+
+        <div class="carrusel-wrapper">
+            <button class="carrusel-arrow left" id="arrowLeft" onclick="scrollCarrusel(-1)">❮</button>
+            <div class="carrusel-container" id="carruselImagenes" tabindex="0"></div>
+            <button class="carrusel-arrow right" id="arrowRight" onclick="scrollCarrusel(1)">❯</button>
+        </div>
+
+        <h2 class="prod-titulo" id="modalTitulo"></h2>
+        <div class="prod-precio" id="modalPrecio"></div>
+        <p class="prod-descripcion" id="modalDescripcion"></p>
+
+        <hr class="prod-separador">
+
+        <label for="selVariante">Elige tu tono:</label>
+        <select id="selVariante"></select>
+
+        <div class="compra-row">
+            <div class="cantidad-control">
+                <button type="button" class="btn-cant" onclick="cambiarCant(-1)">−</button>
+                <input type="number" id="inpCant" class="inp-cant" value="1" readonly>
+                <button type="button" class="btn-cant" onclick="cambiarCant(1)">+</button>
+            </div>
+            <button type="button" class="btn-agregar-beige" onclick="agregarItem()">AÑADIR AL CARRITO</button>
+        </div>
+
+        <div class="envio-box">
+            <svg class="truck-icon" viewBox="0 0 24 24">
+                <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-7.5l1.96 2.5H17V11h2.5zm-1 7.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+            </svg>
+            <div><strong>ENVÍO GRATIS</strong> en compras superiores a <strong>$120.000</strong>. Envíos a toda Colombia.</div>
+        </div>
+
+        <div class="pagos-container">
+            <div class="pagos-titulo">Transfiere o paga con tu cuenta:</div>
+            <div style="font-size: 11px; color: #444; font-weight: 700;">💳 Daviplata | Nequi | Lulo Bank | Breve | Todos los bancos</div>
+        </div>
+    </div>
+</div>
+
+<!-- LIGHTBOX ZOOM -->
+<div class="lightbox-overlay" id="lightboxZoom">
+    <button type="button" class="lightbox-cerrar" onclick="cerrarZoom()">✕</button>
+    <div class="lightbox-viewport" id="zoomViewport">
+        <img id="imgZoomTarget" src="" alt="Foto ampliada">
+    </div>
+    <div class="lightbox-instruccion">Toca para zoom / Pellizca / Desliza para salir</div>
+</div>
+
+<!-- MODAL CARRITO -->
+<div class="modal-carrito-overlay" id="modalCarrito">
+    <div class="carrito-container">
+        <button type="button" class="btn-cerrar-cart" onclick="cerrarCarrito()">✕</button>
+        
+        <div class="header-carrito">
+            <span style="font-size: 18px;">🛒</span>
+            <span class="header-carrito-txt">TU CARRITO DE COMPRAS</span>
+        </div>
+
+        <div class="envio-gratis-bar-container">
+            <div class="envio-gratis-txt" id="txtEnvioGratis">¡Agrega <strong>$120.000</strong> más y consigue envío gratuito!</div>
+            <div class="envio-gratis-progress">
+                <div class="envio-gratis-fill" id="barEnvioGratis"></div>
+            </div>
+        </div>
+
+        <div id="listaItems"></div>
+
+        <div class="total-fila">
+            <span>TOTAL</span>
+            <span id="totalPagar">$0 COP</span>
+        </div>
+
+        <button type="button" class="btn-realizar-compra" onclick="enviarPedido()">
+            REALIZAR COMPRA
+        </button>
+    </div>
+</div>
 
 <script>
 // --- ENLACE DIRECTO DE TU SHEET ---
@@ -150,6 +398,7 @@ async function fetchData() {
         
         let productosProcesados = parseCSV(csvText);
 
+        // FILTRADO AUTOMÁTICO POR URL SI SE ESPECIFICA CATEGORÍA (Ejemplo: ?categoria=BASES)
         const urlParams = new URLSearchParams(window.location.search);
         const categoriaFiltro = urlParams.get('categoria') || urlParams.get('cat');
 
@@ -161,13 +410,11 @@ async function fetchData() {
         }
 
         productosGlobal = productosProcesados;
-        const loadingEl = document.getElementById('loading');
-        if(loadingEl) loadingEl.style.display = 'none';
+        document.getElementById('loading').style.display = 'none';
         renderizarCatalogo(productosGlobal);
     } catch (error) {
         console.error('Error al cargar datos:', error);
-        const loadingEl = document.getElementById('loading');
-        if(loadingEl) loadingEl.innerText = 'Error al cargar los productos. Por favor reintenta en un momento.';
+        document.getElementById('loading').innerText = 'Error al cargar los productos. Por favor reintenta en un momento.';
     }
 }
 
@@ -213,6 +460,7 @@ function parseCSV(text) {
         const descripcion = obj.descripcion || '';
         const categoria = obj.categoria || obj.cat || '';
 
+        // Extraer URLs de imágenes
         let imgs = [];
         if (obj.imagenes) {
             imgs = obj.imagenes.split(',').map(s => s.trim()).filter(s => s.startsWith('http'));
@@ -227,6 +475,7 @@ function parseCSV(text) {
         }
         if (imgs.length === 0) imgs = ['https://via.placeholder.com/300'];
 
+        // Extraer Tonos / Variantes
         let tonos = [];
         if (obj.tonos) {
             tonos = obj.tonos.split(',').map(s => s.trim()).filter(s => s.length > 0);
@@ -257,7 +506,6 @@ function parseCSV(text) {
 // Renderizar tarjetas estilo Atenea Makeup
 function renderizarCatalogo(productos) {
     const grid = document.getElementById('catalogoGrid');
-    if (!grid) return;
     grid.innerHTML = '';
 
     if (productos.length === 0) {
@@ -298,215 +546,82 @@ function renderizarCatalogo(productos) {
     actualizarBadges();
 }
 
-// Obtener el documento raíz superior (para saltar el iframe de Google Sites)
-function getTopDoc() {
-    try {
-        return window.top.document;
-    } catch (e) {
-        return document;
-    }
-}
-
-// Abrir modal inyectado en la ventana principal de la página
+// Abrir modal con los datos del producto seleccionado
 function abrirModalPorIndice(index) {
     const prod = productosGlobal[index];
     if (!prod) return;
     productoSeleccionado = prod;
 
-    const topDoc = getTopDoc();
+    document.getElementById("modalTitulo").innerText = prod.nombre;
+    document.getElementById("modalPrecio").innerText = `$${Number(prod.precio).toLocaleString('es-CO')} COP`;
+    document.getElementById("modalDescripcion").innerText = prod.descripcion || '';
 
-    // Remover modal anterior si existe en la ventana principal
-    const modalAnt = topDoc.getElementById("modalProductoGlobal");
-    if (modalAnt) modalAnt.remove();
-
-    // Remover estilos anteriores inyectados si existen
-    const styleAnt = topDoc.getElementById("estilosModalGlobal");
-    if (styleAnt) styleAnt.remove();
-
-    let variantesHtml = '';
+    // Llenar selector de variantes/tonos
+    const select = document.getElementById("selVariante");
+    select.innerHTML = '';
     if (prod.variantes && prod.variantes.length > 0) {
         prod.variantes.forEach(v => {
-            variantesHtml += `<option value="${v}">${v}</option>`;
+            const opt = document.createElement('option');
+            opt.value = v; opt.innerText = v;
+            select.appendChild(opt);
         });
     } else {
-        variantesHtml = `<option value="Única">Opción Única</option>`;
+        const opt = document.createElement('option');
+        opt.value = "Única"; opt.innerText = "Opción Única";
+        select.appendChild(opt);
     }
 
+    // Llenar carrusel sin repetir la imagen principal si hay varias fotos
+    const carrusel = document.getElementById("carruselImagenes");
+    carrusel.innerHTML = '';
+    
     let imgs = (prod.imagenes && prod.imagenes.length > 0) ? [...prod.imagenes] : [prod.imagen];
     if (imgs.length > 1) {
+        // Excluir la primera imagen para que no vuelva a aparecer en la ventana emergente
         imgs = imgs.slice(1);
     }
 
-    let carruselImgsHtml = '';
     imgs.forEach(imgUrl => {
-        carruselImgsHtml += `<img src="${imgUrl}" alt="${prod.nombre}" onclick="window.frames[0].abrirZoomGlobal('${imgUrl}')" style="width: 100%; height: 100%; aspect-ratio: 1/1; object-fit: contain; flex-shrink: 0; scroll-snap-align: start; cursor: zoom-in; background: #ffffff; border-radius: 4px;">`;
+        const img = document.createElement('img');
+        img.src = imgUrl; img.alt = prod.nombre;
+        img.onclick = () => abrirZoom(imgUrl);
+        carrusel.appendChild(img);
     });
 
-    const estilosGlobales = topDoc.createElement('style');
-    estilosGlobales.id = "estilosModalGlobal";
-    estilosGlobales.innerHTML = `
-        .modal-overlay-global {
-            display: flex !important; 
-            position: fixed !important; 
-            top: 0 !important; 
-            left: 0 !important;
-            width: 100vw !important; 
-            height: 100vh !important; 
-            background: rgba(0, 0, 0, 0.5) !important;
-            backdrop-filter: blur(3px) !important; 
-            z-index: 999999999 !important;
-            align-items: center !important; 
-            justify-content: center !important; 
-            padding: 20px !important;
-            box-sizing: border-box !important;
-            font-family: 'Lato', sans-serif !important;
-        }
-        .modal-content-global {
-            background: #ffffff !important; 
-            width: 95vw !important; 
-            max-width: 680px !important; 
-            max-height: 90vh !important;
-            border-radius: 8px !important; 
-            overflow-y: auto !important; 
-            position: relative !important; 
-            padding: 32px !important;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3) !important; 
-            color: #4a4a4a !important; 
-            outline: none !important;
-            box-sizing: border-box !important;
-        }
-        .carrusel-wrapper-global { position: relative !important; width: 100% !important; margin-bottom: 16px !important; }
-        .carrusel-container-global {
-            width: 100% !important; aspect-ratio: 1 / 1 !important; max-height: 420px !important;
-            display: flex !important; overflow-x: auto !important; scroll-snap-type: x mandatory !important;
-            gap: 8px !important; border-radius: 4px !important; background: #fdfbf7 !important;
-            scroll-behavior: smooth !important;
-            scrollbar-width: none !important;
-        }
-        .carrusel-container-global::-webkit-scrollbar { display: none !important; width: 0px !important; }
-        .carrusel-arrow-global {
-            position: absolute !important; top: 50% !important; transform: translateY(-50%) !important;
-            width: 32px !important; height: 32px !important; 
-            background: rgba(255, 255, 255, 0.25) !important;
-            backdrop-filter: blur(2px) !important; 
-            border: 1px solid rgba(255, 255, 255, 0.3) !important;
-            color: #4a3f35 !important; border-radius: 50% !important; display: flex !important;
-            align-items: center !important; justify-content: center !important; font-size: 13px !important;
-            cursor: pointer !important; z-index: 5 !important; opacity: 0 !important;
-            transition: opacity 0.2s ease, background 0.2s ease !important; pointer-events: none !important;
-        }
-        .carrusel-wrapper-global:hover .carrusel-arrow-global.visible { opacity: 0.8 !important; pointer-events: auto !important; }
-        .carrusel-arrow-global:hover { background: rgba(255, 255, 255, 0.7) !important; opacity: 1 !important; }
-        .carrusel-arrow-global.left { left: 10px !important; }
-        .carrusel-arrow-global.right { right: 10px !important; }
-        .btn-cerrar-global {
-            position: absolute !important; top: 14px !important; right: 16px !important; background: #f5f0eb !important;
-            border: none !important; border-radius: 50% !important; width: 32px !important; height: 32px !important;
-            font-size: 15px !important; font-weight: bold !important; color: #666 !important; cursor: pointer !important;
-            display: flex !important; align-items: center !important; justify-content: center !important; z-index: 10 !important;
-        }
-        .prod-titulo-global { font-size: 22px !important; font-weight: 400 !important; color: #333333 !important; margin: 0 0 6px 0 !important; text-transform: uppercase !important; }
-        .prod-precio-global { font-size: 17px !important; font-weight: 700 !important; color: #4a4a4a !important; margin-bottom: 10px !important; }
-        .prod-descripcion-global { font-size: 14px !important; font-weight: 400 !important; color: #666666 !important; line-height: 1.6 !important; margin-bottom: 18px !important; }
-        .prod-separador-global { border: none !important; border-top: 1px solid #eeeeee !important; margin: 18px 0 !important; }
-        .modal-label-global { display: block !important; font-size: 12px !important; font-weight: 700 !important; color: #666666 !important; margin-bottom: 6px !important; }
-        .modal-select-global { width: 100% !important; padding: 11px 12px !important; border: 1px solid #cccccc !important; border-radius: 0px !important; margin-bottom: 18px !important; font-size: 13px !important; background: #ffffff !important; color: #4a4a4a !important; outline: none !important; }
-        .compra-row-global { display: flex !important; gap: 12px !important; align-items: center !important; margin-bottom: 24px !important; }
-        .cantidad-control-global { display: flex !important; align-items: center !important; border: 1px solid #cccccc !important; height: 46px !important; width: 120px !important; background: #ffffff !important; }
-        .btn-cant-global-modal { width: 38px !important; height: 100% !important; background: transparent !important; border: none !important; cursor: pointer !important; font-size: 15px !important; color: #4a4a4a !important; }
-        .inp-cant-global { width: 44px !important; height: 100% !important; border: none !important; border-left: 1px solid #eeeeee !important; border-right: 1px solid #eeeeee !important; text-align: center !important; font-weight: bold !important; font-size: 14px !important; color: #4a4a4a !important; }
-        .btn-agregar-beige-global { 
-            flex: 1 !important; height: 46px !important; background: #f5f0eb !important; color: #4a3f35 !important; border: 1px solid #e3d7cb !important; 
-            font-weight: 700 !important; font-size: 13px !important; text-transform: uppercase !important; letter-spacing: 1px !important; cursor: pointer !important;
-        }
-        .btn-agregar-beige-global:hover { background: #ebdcd0 !important; }
-        .envio-box-global { display: flex !important; align-items: flex-start !important; gap: 10px !important; font-size: 13px !important; color: #666666 !important; line-height: 1.4 !important; margin-bottom: 18px !important; }
-        .pagos-container-global { border: 1px solid #e5e5e5 !important; border-radius: 8px !important; padding: 14px !important; background: #fafafa !important; }
-        .pagos-titulo-global { font-size: 12px !important; color: #666666 !important; margin-bottom: 6px !important; }
-    `;
-    topDoc.head.appendChild(estilosGlobales);
+    document.getElementById("inpCant").value = 1;
+    abrirModal();
+}
 
-    const modalHTML = `
-    <div class="modal-overlay-global" id="modalProductoGlobal">
-        <div class="modal-content-global" tabindex="0">
-            <button type="button" class="btn-cerrar-global" onclick="window.frames[0].cerrarModalGlobal()">✕</button>
-
-            <div class="carrusel-wrapper-global">
-                <button class="carrusel-arrow-global left" id="arrowLeftGlobal" onclick="window.frames[0].scrollCarruselGlobal(-1)">❮</button>
-                <div class="carrusel-container-global" id="carruselImagenesGlobal" tabindex="0">
-                    ${carruselImgsHtml}
-                </div>
-                <button class="carrusel-arrow-global right" id="arrowRightGlobal" onclick="window.frames[0].scrollCarruselGlobal(1)">❯</button>
-            </div>
-
-            <h2 class="prod-titulo-global">${prod.nombre}</h2>
-            <div class="prod-precio-global">$${Number(prod.precio).toLocaleString('es-CO')} COP</div>
-            <p class="prod-descripcion-global">${prod.descripcion || ''}</p>
-
-            <hr class="prod-separador-global">
-
-            <label class="modal-label-global" for="selVarianteGlobal">Elige tu tono:</label>
-            <select class="modal-select-global" id="selVarianteGlobal">${variantesHtml}</select>
-
-            <div class="compra-row-global">
-                <div class="cantidad-control-global">
-                    <button type="button" class="btn-cant-global-modal" onclick="window.frames[0].cambiarCantGlobalModal(-1)">−</button>
-                    <input type="number" id="inpCantGlobalModal" class="inp-cant-global" value="1" readonly>
-                    <button type="button" class="btn-cant-global-modal" onclick="window.frames[0].cambiarCantGlobalModal(1)">+</button>
-                </div>
-                <button type="button" class="btn-agregar-beige-global" onclick="window.frames[0].agregarItemGlobal()">AÑADIR AL CARRITO</button>
-            </div>
-
-            <div class="envio-box-global">
-                <svg style="width: 20px; height: 20px; fill: #000000; flex-shrink: 0; margin-top: 1px;" viewBox="0 0 24 24">
-                    <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-7.5l1.96 2.5H17V11h2.5zm-1 7.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
-                </svg>
-                <div><strong>ENVÍO GRATIS</strong> en compras superiores a <strong>$120.000</strong>. Envíos a toda Colombia.</div>
-            </div>
-
-            <div class="pagos-container-global">
-                <div class="pagos-titulo-global">Transfiere o paga con tu cuenta:</div>
-                <div style="font-size: 11px; color: #444; font-weight: 700;">💳 Daviplata | Nequi | Lulo Bank | Breve | Todos los bancos</div>
-            </div>
-        </div>
-    </div>`;
-
-    topDoc.body.insertAdjacentHTML('beforeend', modalHTML);
-
-    setTimeout(() => {
-        const carrusel = topDoc.getElementById("carruselImagenesGlobal");
+function abrirModal() { 
+    document.getElementById("modalProducto").style.display = "flex"; 
+    requestAnimationFrame(() => {
+        const carrusel = document.getElementById("carruselImagenes");
         if (carrusel) {
             carrusel.scrollLeft = 0;
-            carrusel.addEventListener("scroll", actualizarFlechasModalGlobal);
-            actualizarFlechasModalGlobal();
+            carrusel.focus();
         }
-    }, 50);
+        actualizarFlechas();
+    });
+    setTimeout(actualizarFlechas, 100);
 }
 
-function cerrarModalGlobal() {
-    const topDoc = getTopDoc();
-    const modal = topDoc.getElementById("modalProductoGlobal");
-    if (modal) modal.remove();
-    const estilo = topDoc.getElementById("estilosModalGlobal");
-    if (estilo) estilo.remove();
-    renderizarCatalogo(productosGlobal);
+function cerrarModal() { 
+    document.getElementById("modalProducto").style.display = "none"; 
+    renderizarCatalogo(productosGlobal); // Mantiene siempre la tarjeta principal con su imagen original e intacta
 }
 
-function scrollCarruselGlobal(direccion) {
-    const topDoc = getTopDoc();
-    const carrusel = topDoc.getElementById("carruselImagenesGlobal");
-    if (!carrusel) return;
+// --- CARRUSEL Y NAVEGACIÓN ---
+const carrusel = document.getElementById("carruselImagenes");
+const arrowLeft = document.getElementById("arrowLeft");
+const arrowRight = document.getElementById("arrowRight");
+
+function scrollCarrusel(direccion) {
     const paso = carrusel.clientWidth;
     carrusel.scrollBy({ left: direccion * paso, behavior: "smooth" });
 }
 
-function actualizarFlechasModalGlobal() {
-    const topDoc = getTopDoc();
-    const carrusel = topDoc.getElementById("carruselImagenesGlobal");
-    const arrowLeft = topDoc.getElementById("arrowLeftGlobal");
-    const arrowRight = topDoc.getElementById("arrowRightGlobal");
-    if (!carrusel || !arrowLeft || !arrowRight) return;
-
+function actualizarFlechas() {
+    if (!carrusel) return;
     const scrollLeft = carrusel.scrollLeft;
     const maxScroll = carrusel.scrollWidth - carrusel.clientWidth;
 
@@ -517,22 +632,161 @@ function actualizarFlechasModalGlobal() {
     else arrowRight.classList.remove("visible");
 }
 
-function cambiarCantGlobalModal(d) {
-    const topDoc = getTopDoc();
-    const el = topDoc.getElementById("inpCantGlobalModal");
-    if (!el) return;
+carrusel.addEventListener("scroll", actualizarFlechas);
+window.addEventListener("resize", actualizarFlechas);
+
+// --- TECLADO GLOBAL ---
+document.addEventListener("keydown", (e) => {
+    const modalProductoVisible = document.getElementById("modalProducto").style.display === "flex";
+    const modalCarritoVisible = document.getElementById("modalCarrito").style.display === "flex";
+    const lightboxVisible = document.getElementById("lightboxZoom").style.display === "block";
+
+    if (e.key === "Escape") {
+        if (lightboxVisible) { cerrarZoom(); return; }
+        if (modalCarritoVisible) { 
+            cerrarCarrito(); 
+            if (modalProductoVisible) document.getElementById("modalContent").focus();
+            return; 
+        }
+        if (modalProductoVisible) { cerrarModal(); return; }
+    }
+
+    if (modalProductoVisible && !lightboxVisible && !modalCarritoVisible) {
+        const paso = carrusel.clientWidth;
+        const modalContent = document.getElementById("modalContent");
+
+        if (e.key === "ArrowRight") { e.preventDefault(); carrusel.scrollBy({ left: paso, behavior: "smooth" }); } 
+        else if (e.key === "ArrowLeft") { e.preventDefault(); carrusel.scrollBy({ left: -paso, behavior: "smooth" }); } 
+        else if (e.key === "ArrowDown") { e.preventDefault(); modalContent.scrollBy({ top: 100, behavior: "smooth" }); } 
+        else if (e.key === "ArrowUp") { e.preventDefault(); modalContent.scrollBy({ top: -100, behavior: "smooth" }); } 
+        else if (e.key === "Enter") {
+            if (document.activeElement === carrusel) {
+                e.preventDefault();
+                const imgs = Array.from(carrusel.querySelectorAll("img"));
+                const scrollPos = carrusel.scrollLeft;
+                const index = Math.round(scrollPos / carrusel.clientWidth);
+                if (imgs[index]) abrirZoom(imgs[index].src);
+            }
+        }
+    }
+});
+
+// --- SWIPE CERRAR MODALES ---
+function habilitarSwipeCerrarModal(idContenedor, callbackCerrar, selectoresIgnorar = []) {
+    const contenedor = document.getElementById(idContenedor);
+    if (!contenedor) return;
+
+    let xInicial = 0, yInicial = 0;
+
+    contenedor.addEventListener('touchstart', e => {
+        if (selectoresIgnorar.some(selector => e.target.closest(selector))) return;
+        xInicial = e.changedTouches[0].screenX; yInicial = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    contenedor.addEventListener('touchend', e => {
+        if (selectoresIgnorar.some(selector => e.target.closest(selector))) return;
+        let xFinal = e.changedTouches[0].screenX, yFinal = e.changedTouches[0].screenY;
+        let diferenciaX = xFinal - xInicial, diferenciaY = yFinal - yInicial;
+
+        if (diferenciaX > 70 && Math.abs(diferenciaX) > Math.abs(diferenciaY)) { callbackCerrar(); }
+    }, { passive: true });
+}
+
+habilitarSwipeCerrarModal('modalProducto', cerrarModal, ['.carrusel-container', 'select', '.cantidad-control']);
+habilitarSwipeCerrarModal('modalCarrito', cerrarCarrito, ['.cant-contros-cart']);
+
+// --- LIGHTBOX Y ZOOM ---
+let scale = 1, pointX = 0, pointY = 0, startX = 0, startY = 0, initialDist = 0, initialScale = 1, isTouching = false;
+const viewport = document.getElementById("zoomViewport");
+const imgTarget = document.getElementById("imgZoomTarget");
+const ZOOM_NIVEL_HOVER = 3.2;
+
+function updateTransform() {
+    if (scale < 1) { scale = 1; pointX = 0; pointY = 0; }
+    imgTarget.style.transform = `translate3d(${pointX}px, ${pointY}px, 0px) scale(${scale})`;
+}
+
+function abrirZoom(urlImagen) {
+    imgTarget.src = urlImagen;
+    scale = 1; pointX = 0; pointY = 0;
+    updateTransform();
+    document.getElementById("lightboxZoom").style.display = "block";
+}
+
+function cerrarZoom() { document.getElementById("lightboxZoom").style.display = "none"; }
+
+viewport.addEventListener('mousemove', (e) => {
+    if (isTouching) return;
+    const rect = viewport.getBoundingClientRect();
+    const x = e.clientX - rect.left, y = e.clientY - rect.top;
+    scale = ZOOM_NIVEL_HOVER;
+    pointX = (rect.width / 2 - x) * 2.2;
+    pointY = (rect.height / 2 - y) * 2.2;
+    updateTransform();
+});
+
+viewport.addEventListener('mouseleave', () => {
+    if (isTouching) return;
+    scale = 1; pointX = 0; pointY = 0; updateTransform();
+});
+
+let touchStartTime = 0, isTap = false, touchStartX = 0, touchStartY = 0;
+
+viewport.addEventListener('touchstart', (e) => {
+    isTouching = true;
+    if (e.touches.length === 1) {
+        isTap = true; touchStartTime = Date.now();
+        touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY;
+        if (scale > 1) { startX = e.touches[0].clientX - pointX; startY = e.touches[0].clientY - pointY; }
+    } else if (e.touches.length === 2) {
+        isTap = false;
+        initialDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        initialScale = scale;
+    }
+}, { passive: false });
+
+viewport.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 1) {
+        const moveX = e.touches[0].clientX, moveY = e.touches[0].clientY;
+        if (Math.abs(moveX - touchStartX) > 10 || Math.abs(moveY - touchStartY) > 10) isTap = false;
+        if (scale > 1) { e.preventDefault(); pointX = moveX - startX; pointY = moveY - startY; updateTransform(); }
+        else { e.preventDefault(); }
+    } else if (e.touches.length === 2) {
+        isTap = false; e.preventDefault();
+        const dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        scale = initialScale * (dist / initialDist);
+        if (scale < 1) scale = 1;
+        updateTransform();
+    }
+}, { passive: false });
+
+viewport.addEventListener('touchend', (e) => {
+    if (e.changedTouches.length === 1 && e.touches.length === 0) {
+        const touchEndTime = Date.now();
+        const endX = e.changedTouches[0].clientX, endY = e.changedTouches[0].clientY;
+        if (isTap && (touchEndTime - touchStartTime < 300)) {
+            scale = (scale === 1) ? 2.5 : 1; pointX = 0; pointY = 0; updateTransform();
+        } else if (scale === 1 && !isTap) {
+            if (Math.abs(endX - touchStartX) > 80 || Math.abs(endY - touchStartY) > 80) cerrarZoom();
+        }
+    }
+    if (e.touches.length === 0) {
+        isTouching = false;
+        if (scale <= 1.05) { scale = 1; pointX = 0; pointY = 0; updateTransform(); }
+    }
+});
+
+// --- LÓGICA DE CARRITO Y COMPRA ---
+function cambiarCant(d) {
+    const el = document.getElementById("inpCant");
     let v = +el.value + d;
     el.value = v < 1 ? 1 : v;
 }
 
-function agregarItemGlobal() {
+function agregarItem() {
     if (!productoSeleccionado) return;
-    const topDoc = getTopDoc();
-    const sel = topDoc.getElementById("selVarianteGlobal");
-    const inp = topDoc.getElementById("inpCantGlobalModal");
-    
-    const variante = sel ? sel.value : "Única";
-    const cantidad = inp ? +inp.value : 1;
+    const variante = document.getElementById("selVariante").value;
+    const cantidad = +document.getElementById("inpCant").value;
     const itemNombre = `${productoSeleccionado.nombre} (${variante})`;
     const precio = productoSeleccionado.precio;
 
@@ -543,151 +797,62 @@ function agregarItemGlobal() {
     else { carrito.push({ nombre: itemNombre, precio: precio, cantidad: cantidad }); }
 
     localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito));
-    cerrarModalGlobal();
+    cerrarModal();
+    cargarCarrito();
     abrirCarrito();
 }
 
-// --- LIGHTBOX ZOOM GLOBAL ---
-function abrirZoomGlobal(urlImagen) {
-    const topDoc = getTopDoc();
-    const zoomAnt = topDoc.getElementById("lightboxZoomGlobal");
-    if (zoomAnt) zoomAnt.remove();
+function abrirCarrito() { document.getElementById("modalCarrito").style.display = "flex"; }
+function cerrarCarrito() { document.getElementById("modalCarrito").style.display = "none"; }
 
-    const zoomHTML = `
-    <div style="display: flex !important; position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; background: rgba(0, 0, 0, 0.95) !important; z-index: 1000000000 !important; align-items: center !important; justify-content: center !important;" id="lightboxZoomGlobal" onclick="window.frames[0].cerrarZoomGlobal()">
-        <button type="button" style="position: fixed !important; top: 15px !important; right: 20px !important; background: rgba(255, 255, 255, 0.12) !important; color: #ffffff !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; border-radius: 50% !important; width: 38px !important; height: 38px !important; font-size: 18px !important; font-weight: bold !important; cursor: pointer !important; z-index: 1000000001 !important; display: flex !important; align-items: center !important; justify-content: center !important;" onclick="window.frames[0].cerrarZoomGlobal()">✕</button>
-        <div style="width: 100% !important; height: 100% !important; display: flex !important; align-items: center !important; justify-content: center !important; position: relative !important;">
-            <img src="${urlImagen}" style="max-width: 90vw !important; max-height: 85vh !important; object-fit: contain !important;">
-        </div>
-    </div>`;
-
-    topDoc.body.insertAdjacentHTML('beforeend', zoomHTML);
-}
-
-function cerrarZoomGlobal() {
-    const topDoc = getTopDoc();
-    const zoom = topDoc.getElementById("lightboxZoomGlobal");
-    if (zoom) zoom.remove();
-}
-
-// --- CARRITO GLOBAL ---
-function abrirCarrito() {
-    const topDoc = getTopDoc();
-    const cartAnt = topDoc.getElementById("modalCarritoGlobal");
-    if (cartAnt) cartAnt.remove();
-
-    const estiloCartAnt = topDoc.getElementById("estilosCarritoGlobal");
-    if (estiloCartAnt) estiloCartAnt.remove();
-
+function cargarCarrito() {
     const carrito = JSON.parse(localStorage.getItem(CLAVE_CARRITO) || "[]");
+    const contenedor = document.getElementById("listaItems");
     let html = ""; let totalPagar = 0; let cantTotal = 0;
 
     if (carrito.length === 0) {
-        html = '<div style="text-align: center; color: #888888; padding: 24px 0; font-size: 13px;">Tu carrito está vacío.</div>';
-    } else {
-        carrito.forEach((item, index) => {
-            const subtotal = item.precio * item.cantidad;
-            totalPagar += subtotal; 
-            cantTotal += item.cantidad;
-            
-            html += `
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #eee8df; font-size: 13px; gap: 10px;">
-                <div style="flex:1;">
-                    <span style="font-weight: 400; color: #333333; letter-spacing: 0.5px; text-transform: uppercase; font-size: 12px; display:block;">${item.nombre}</span>
-                    <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
-                        <div style="display: flex; align-items: center; border: 1px solid #cccccc; background: #ffffff;">
-                            <button type="button" style="width: 26px; height: 26px; background: transparent; border: none; cursor: pointer; font-weight: bold; color: #4a4a4a;" onclick="window.frames[0].modificarCantidadGlobal(${index}, -1)">−</button>
-                            <span style="width: 28px; text-align: center; font-size: 12px; font-weight: 700; color: #4a4a4a; border-left: 1px solid #eeeeee; border-right: 1px solid #eeeeee;">${item.cantidad}</span>
-                            <button type="button" style="width: 26px; height: 26px; background: transparent; border: none; cursor: pointer; font-weight: bold; color: #4a4a4a;" onclick="window.frames[0].modificarCantidadGlobal(${index}, 1)">+</button>
-                        </div>
-                        <button type="button" style="background: transparent; border: none; color: #a38c78; cursor: pointer; font-size: 15px; padding: 4px 6px;" onclick="window.frames[0].eliminarProductoDirectoGlobal(${index})">🗑️</button>
+        contenedor.innerHTML = '<div class="carrito-vacio">Tu carrito está vacío.</div>';
+        document.getElementById("totalPagar").innerText = "$0 COP";
+        actualizarBadges(0);
+        actualizarBarraEnvio(0);
+        return;
+    }
+
+    carrito.forEach((item, index) => {
+        const subtotal = item.precio * item.cantidad;
+        totalPagar += subtotal; 
+        cantTotal += item.cantidad;
+        
+        html += `
+        <div class="item-fila">
+            <div style="flex:1;">
+                <span class="item-nombre" style="display:block;">${item.nombre}</span>
+                <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+                    <div class="cant-contros-cart">
+                        <button type="button" class="btn-cant-cart" onclick="modificarCantidad(${index}, -1)">−</button>
+                        <span class="num-cant-cart">${item.cantidad}</span>
+                        <button type="button" class="btn-cant-cart" onclick="modificarCantidad(${index}, 1)">+</button>
                     </div>
-                </div>
-                <span style="color: #333333; font-weight: 700; font-size: 13px;">$${Number(item.precio).toLocaleString("es-CO")}</span>
-            </div>`;
-        });
-    }
-
-    const porcentajeEnvio = Math.min((totalPagar / META_ENVIO) * 100, 100);
-    let txtEnvio = "";
-    if (totalPagar >= META_ENVIO) {
-        txtEnvio = "🎉 ¡Felicidades! Tienes <strong>ENVÍO GRATUITO</strong>";
-    } else {
-        const falta = META_ENVIO - totalPagar;
-        txtEnvio = `¡Agrega <strong>$${falta.toLocaleString("es-CO")}</strong> más y consigue envío gratuito!`;
-    }
-
-    const estilosCart = topDoc.createElement('style');
-    estilosCart.id = "estilosCarritoGlobal";
-    estilosCart.innerHTML = `
-        .modal-carrito-overlay-global {
-            display: flex !important; position: fixed !important; top: 0 !important; left: 0 !important;
-            width: 100vw !important; height: 100vh !important; background: rgba(0, 0, 0, 0.5) !important;
-            backdrop-filter: blur(3px) !important; z-index: 999999999 !important;
-            align-items: center !important; justify-content: center !important; padding: 20px !important;
-            box-sizing: border-box !important; font-family: 'Lato', sans-serif !important;
-        }
-    `;
-    topDoc.head.appendChild(estilosCart);
-
-    const carritoHTML = `
-    <div class="modal-carrito-overlay-global" id="modalCarritoGlobal">
-        <div style="width: 100% !important; max-width: 440px !important; background: #faf6f0 !important; border: 1px solid #f0e6d8 !important; border-radius: 6px !important; padding: 24px !important; box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important; position: relative !important; max-height: 85vh !important; overflow-y: auto !important; box-sizing: border-box !important;">
-            <button type="button" style="position: absolute !important; top: 14px !important; right: 16px !important; background: #f5f0eb !important; border: none !important; border-radius: 50% !important; width: 32px !important; height: 32px !important; font-size: 15px !important; font-weight: bold !important; color: #666 !important; cursor: pointer !important; display: flex !important; align-items: center !important; justify-content: center !important; z-index: 10 !important;" onclick="window.frames[0].cerrarCarrito()">✕</button>
-            
-            <div style="display: flex !important; align-items: center !important; gap: 8px !important; margin-bottom: 16px !important; border-bottom: 1px solid #e3d7cb !important; padding-bottom: 10px !important;">
-                <span style="font-size: 18px !important;">🛒</span>
-                <span style="font-size: 14px !important; font-weight: 700 !important; letter-spacing: 1.5px !important; color: #4a3f35 !important; text-transform: uppercase !important;">TU CARRITO DE COMPRAS</span>
-            </div>
-
-            <div style="background: #ffffff !important; border: 1px solid #e0e0e0 !important; border-radius: 6px !important; padding: 12px 14px !important; margin-bottom: 20px !important; text-align: center !important;">
-                <div style="font-size: 12px !important; color: #4a3f35 !important; margin-bottom: 8px !important;">${txtEnvio}</div>
-                <div style="width: 100% !important; height: 6px !important; background: #eeeeee !important; border-radius: 10px !important; overflow: hidden !important;">
-                    <div style="height: 100% !important; background: #4a3f35 !important; width: ${porcentajeEnvio}% !important; transition: width 0.3s ease !important;"></div>
+                    <button type="button" class="btn-eliminar-item" onclick="eliminarProductoDirecto(${index})" title="Eliminar producto">🗑️</button>
                 </div>
             </div>
+            <span class="item-precio">$${Number(item.precio).toLocaleString("es-CO")}</span>
+        </div>`;
+    });
 
-            <div>${html}</div>
-
-            <div style="display: flex !important; justify-content: space-between !important; font-size: 15px !important; font-weight: 700 !important; margin-top: 20px !important; padding-top: 15px !important; border-top: 1px solid #e3d7cb !important; color: #333333 !important; letter-spacing: 0.5px !important;">
-                <span>TOTAL</span>
-                <span>$${totalPagar.toLocaleString("es-CO")} COP</span>
-            </div>
-
-            <button type="button" style="width: 100% !important; padding: 14px !important; background: #4a3f35 !important; color: #ffffff !important; border: none !important; border-radius: 2px !important; font-size: 12px !important; font-weight: 700 !important; letter-spacing: 1.5px !important; text-transform: uppercase !important; cursor: pointer !important; margin-top: 16px !important;" onclick="window.frames[0].enviarPedido()">
-                REALIZAR COMPRA
-            </button>
-        </div>
-    </div>`;
-
-    topDoc.body.insertAdjacentHTML('beforeend', carritoHTML);
+    contenedor.innerHTML = html;
+    document.getElementById("totalPagar").innerText = `$${totalPagar.toLocaleString("es-CO")} COP`;
     actualizarBadges(cantTotal);
+    actualizarBarraEnvio(totalPagar);
 }
 
-function cerrarCarrito() {
-    const topDoc = getTopDoc();
-    const cart = topDoc.getElementById("modalCarritoGlobal");
-    if (cart) cart.remove();
-    const estilo = topDoc.getElementById("estilosCarritoGlobal");
-    if (estilo) estilo.remove();
-}
-
-function modificarCantidadGlobal(index, cambio) {
-    let carrito = JSON.parse(localStorage.getItem(CLAVE_CARRITO) || "[]");
-    if (carrito[index]) {
-        carrito[index].cantidad += cambio;
-        if (carrito[index].cantidad <= 0) carrito.splice(index, 1);
-        localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito));
-        abrirCarrito();
-    }
-}
-
-function eliminarProductoDirectoGlobal(index) {
+// ELIMINAR PRODUCTO COMPLETO DESDE LA CANECA
+function eliminarProductoDirecto(index) {
     let carrito = JSON.parse(localStorage.getItem(CLAVE_CARRITO) || "[]");
     if (carrito[index]) {
         carrito.splice(index, 1);
         localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito));
-        abrirCarrito();
+        cargarCarrito();
     }
 }
 
@@ -697,6 +862,31 @@ function actualizarBadges(cantidad) {
         cantidad = carrito.reduce((acc, i) => acc + i.cantidad, 0);
     }
     document.querySelectorAll('.badgeCantGlobal').forEach(el => el.innerText = cantidad);
+}
+
+function actualizarBarraEnvio(total) {
+    const txt = document.getElementById("txtEnvioGratis");
+    const fill = document.getElementById("barEnvioGratis");
+
+    if (total >= META_ENVIO) {
+        txt.innerHTML = "🎉 ¡Felicidades! Tienes <strong>ENVÍO GRATUITO</strong>";
+        fill.style.width = "100%";
+    } else {
+        const falta = META_ENVIO - total;
+        const porcentaje = Math.min((total / META_ENVIO) * 100, 100);
+        txt.innerHTML = `¡Agrega <strong>$${falta.toLocaleString("es-CO")}</strong> más y consigue envío gratuito!`;
+        fill.style.width = `${porcentaje}%`;
+    }
+}
+
+function modificarCantidad(index, cambio) {
+    let carrito = JSON.parse(localStorage.getItem(CLAVE_CARRITO) || "[]");
+    if (carrito[index]) {
+        carrito[index].cantidad += cambio;
+        if (carrito[index].cantidad <= 0) carrito.splice(index, 1);
+        localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito));
+        cargarCarrito();
+    }
 }
 
 function enviarPedido() {
@@ -719,13 +909,13 @@ function enviarPedido() {
 
     window.open(`https://wa.me/${TELEFONO_WA}?text=${encodeURIComponent(msj)}`, "_blank");
     localStorage.removeItem(CLAVE_CARRITO);
+    cargarCarrito();
     cerrarCarrito();
-    actualizarBadges(0);
 }
 
 // Inicializar la carga inmediata
 fetchData();
-actualizarBadges();
+cargarCarrito();
 </script>
 
 </body>
