@@ -20,21 +20,10 @@
         }
 
         /* --- DESLIZADORES (SCROLLBARS) SUTILES --- */
-        ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(74, 63, 53, 0.2);
-            border-radius: 10px;
-            backdrop-filter: blur(2px);
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(74, 63, 53, 0.4);
-        }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(74, 63, 53, 0.2); border-radius: 10px; backdrop-filter: blur(2px); }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(74, 63, 53, 0.4); }
 
         /* --- FILTRO Y BUSCADOR --- */
         .filter-container {
@@ -64,7 +53,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
 
-        /* --- GRILLA Y TARJETAS --- */
+        /* --- GRILLA Y TARJETAS ATENEA --- */
         #loading {
             text-align: center;
             padding: 40px;
@@ -114,17 +103,12 @@
         }
 
         .card-atenea .img-container .img-hover-preview {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            object-fit: cover;
-            opacity: 0;
-            pointer-events: none;
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%; object-fit: cover;
+            opacity: 0; pointer-events: none;
         }
 
-        .card-atenea .img-container:hover .img-hover-preview {
-            opacity: 1;
-        }
+        .card-atenea .img-container:hover .img-hover-preview { opacity: 1; }
 
         .card-atenea .info-previa { padding: 14px 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
 
@@ -133,269 +117,129 @@
         }
 
         .card-atenea .precio-previa { 
-            font-size: 13px; 
-            font-weight: 700; 
-            color: #4a3f35; 
-            margin-bottom: 12px; 
+            font-size: 13px; font-weight: 700; color: #4a3f35; margin-bottom: 12px; 
         }
 
         .btn-ver-pedido-card {
-            width: 100%;
-            background: #f5f0eb;
-            color: #4a3f35;
-            border: 1px solid #e3d7cb;
-            border-radius: 4px;
-            padding: 9px 12px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            width: 100%; background: #f5f0eb; color: #4a3f35;
+            border: 1px solid #e3d7cb; border-radius: 4px; padding: 9px 12px;
+            font-size: 11px; font-weight: 700; letter-spacing: 1px;
+            text-transform: uppercase; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
             transition: all 0.2s ease;
         }
 
         .btn-ver-pedido-card:hover { background: #ebdcd0; }
 
         .badge-flotante {
-            background: #4a3f35;
-            color: #ffffff;
-            border-radius: 50%;
-            padding: 2px 6px;
-            font-size: 10px;
-            font-weight: 700;
+            background: #4a3f35; color: #ffffff; border-radius: 50%;
+            padding: 2px 6px; font-size: 10px; font-weight: 700;
         }
 
-        /* --- MODALES --- */
+        /* --- MODALES Y OVERLAYS --- */
         .modal-overlay, .modal-carrito-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(2px);
-            z-index: 99999;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(2px); z-index: 99999;
+            align-items: center; justify-content: center; padding: 15px;
         }
 
         .modal-content {
-            background: #ffffff;
-            width: 90vw;
-            max-width: 580px;
-            max-height: 90vh;
-            border-radius: 4px;
-            overflow-y: auto;
-            position: relative;
-            padding: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            color: #4a4a4a;
-            outline: none;
+            background: #ffffff; width: 90vw; max-width: 580px; max-height: 90vh;
+            border-radius: 4px; overflow-y: auto; position: relative; padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); color: #4a4a4a; outline: none;
         }
 
         /* Carrusel Wrapper */
-        .carrusel-wrapper {
-            position: relative;
-            width: 100%;
-            margin-bottom: 16px;
-        }
+        .carrusel-wrapper { position: relative; width: 100%; margin-bottom: 16px; }
 
         .carrusel-container {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            max-height: 380px;
-            display: flex;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            gap: 8px;
-            border-radius: 4px;
-            background: #fdfbf7;
-            outline: none;
-            scroll-behavior: smooth;
+            width: 100%; aspect-ratio: 1 / 1; max-height: 380px;
+            display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+            gap: 8px; border-radius: 4px; background: #fdfbf7;
+            outline: none; scroll-behavior: smooth;
         }
 
         .carrusel-container img {
-            width: 100%;
-            height: 100%;
-            aspect-ratio: 1 / 1;
-            object-fit: contain;
-            flex-shrink: 0;
-            scroll-snap-align: start;
-            cursor: zoom-in;
-            background: #ffffff;
-            border-radius: 4px;
+            width: 100%; height: 100%; aspect-ratio: 1 / 1;
+            object-fit: contain; flex-shrink: 0; scroll-snap-align: start;
+            cursor: zoom-in; background: #ffffff; border-radius: 4px;
         }
 
         .carrusel-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 32px;
-            height: 32px;
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            color: #4a3f35;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            cursor: pointer;
-            z-index: 5;
-            opacity: 0;
-            transition: opacity 0.2s ease, background 0.2s ease;
-            pointer-events: none;
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: 32px; height: 32px; background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(4px); border: 1px solid rgba(255, 255, 255, 0.6);
+            color: #4a3f35; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 14px;
+            cursor: pointer; z-index: 5; opacity: 0;
+            transition: opacity 0.2s ease, background 0.2s ease; pointer-events: none;
         }
 
-        .carrusel-wrapper:hover .carrusel-arrow.visible {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        @media (hover: none) {
-            .carrusel-arrow.visible {
-                opacity: 1;
-                pointer-events: auto;
-            }
-        }
-
+        .carrusel-wrapper:hover .carrusel-arrow.visible { opacity: 1; pointer-events: auto; }
+        @media (hover: none) { .carrusel-arrow.visible { opacity: 1; pointer-events: auto; } }
         .carrusel-arrow:hover { background: rgba(255, 255, 255, 0.8); }
         .carrusel-arrow.left { left: 8px; }
         .carrusel-arrow.right { right: 8px; }
 
         /* Lightbox / Zoom */
         .lightbox-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 100000;
-            touch-action: none;
-            user-select: none;
-            -webkit-user-select: none;
-            overflow: hidden;
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.95);
+            z-index: 100000; touch-action: none; user-select: none;
+            -webkit-user-select: none; overflow: hidden;
         }
 
         .lightbox-viewport {
-            width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center;
-            position: relative;
-            overflow: hidden;
+            width: 100%; height: 100%; display: flex; align-items: center;
+            justify-content: center; position: relative; overflow: hidden;
         }
 
         .lightbox-viewport img {
-            max-width: 90vw; max-height: 85vh;
-            object-fit: contain;
-            transform-origin: center center;
-            will-change: transform;
-            transition: transform 0.08s ease-out;
-            pointer-events: none;
+            max-width: 90vw; max-height: 85vh; object-fit: contain;
+            transform-origin: center center; will-change: transform;
+            transition: transform 0.08s ease-out; pointer-events: none;
         }
 
         .lightbox-cerrar {
             position: fixed; top: 15px; right: 20px;
-            background: rgba(255, 255, 255, 0.12);
-            color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%; width: 38px; height: 38px;
-            font-size: 18px; font-weight: bold; cursor: pointer;
-            z-index: 100002; display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(4px);
-            transition: background 0.2s ease;
+            background: rgba(255, 255, 255, 0.12); color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50%;
+            width: 38px; height: 38px; font-size: 18px; font-weight: bold;
+            cursor: pointer; z-index: 100002; display: flex; align-items: center;
+            justify-content: center; backdrop-filter: blur(4px); transition: background 0.2s ease;
         }
         .lightbox-cerrar:hover { background: rgba(255, 255, 255, 0.25); }
 
         .lightbox-instruccion {
-            position: fixed; bottom: 15px; left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.75);
-            font-size: 11px; letter-spacing: 0.8px; text-transform: uppercase;
-            pointer-events: none; z-index: 100001;
-            background: rgba(0, 0, 0, 0.4); padding: 6px 16px;
-            border-radius: 20px; backdrop-filter: blur(4px); white-space: nowrap;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.75); font-size: 11px; letter-spacing: 0.8px;
+            text-transform: uppercase; pointer-events: none; z-index: 100001;
+            background: rgba(0, 0, 0, 0.4); padding: 6px 16px; border-radius: 20px;
+            backdrop-filter: blur(4px); white-space: nowrap; border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         /* Carrito */
         .carrito-container { 
-            width: 100%;
-            max-width: 440px; 
-            background: #faf6f0; 
-            border: 1px solid #f0e6d8;
-            border-radius: 6px; 
-            padding: 24px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-            position: relative;
-            max-height: 85vh;
-            overflow-y: auto;
+            width: 100%; max-width: 440px; background: #faf6f0;
+            border: 1px solid #f0e6d8; border-radius: 6px; padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12); position: relative;
+            max-height: 85vh; overflow-y: auto;
         }
 
-        .header-carrito {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 16px;
-            border-bottom: 1px solid #e3d7cb;
-            padding-bottom: 10px;
-        }
+        .header-carrito { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid #e3d7cb; padding-bottom: 10px; }
+        .header-carrito-txt { font-size: 14px; font-weight: 700; letter-spacing: 1.5px; color: #4a3f35; text-transform: uppercase; }
 
-        .header-carrito-txt {
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            color: #4a3f35;
-            text-transform: uppercase;
-        }
-
-        .envio-gratis-bar-container {
-            background: #ffffff;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            padding: 12px 14px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .envio-gratis-txt {
-            font-size: 12px;
-            color: #4a3f35;
-            margin-bottom: 8px;
-        }
-
-        .envio-gratis-progress {
-            width: 100%;
-            height: 6px;
-            background: #eeeeee;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .envio-gratis-fill {
-            height: 100%;
-            background: #4a3f35;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
+        .envio-gratis-bar-container { background: #ffffff; border: 1px solid #e0e0e0; border-radius: 6px; padding: 12px 14px; margin-bottom: 20px; text-align: center; }
+        .envio-gratis-txt { font-size: 12px; color: #4a3f35; margin-bottom: 8px; }
+        .envio-gratis-progress { width: 100%; height: 6px; background: #eeeeee; border-radius: 10px; overflow: hidden; }
+        .envio-gratis-fill { height: 100%; background: #4a3f35; width: 0%; transition: width 0.3s ease; }
 
         .btn-cerrar, .btn-cerrar-cart {
-            position: absolute;
-            top: 12px; right: 14px;
-            background: #f5f0eb;
-            border: none;
-            border-radius: 50%;
-            width: 28px; height: 28px;
-            font-size: 14px;
-            font-weight: bold;
-            color: #666;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
+            position: absolute; top: 12px; right: 14px; background: #f5f0eb;
+            border: none; border-radius: 50%; width: 28px; height: 28px;
+            font-size: 14px; font-weight: bold; color: #666; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; z-index: 10;
         }
 
         .prod-titulo { font-size: 20px; font-weight: 400; color: #333333; margin: 0 0 4px 0; letter-spacing: 0.5px; text-transform: uppercase; }
@@ -404,16 +248,10 @@
         .prod-separador { border: none; border-top: 1px solid #eeeeee; margin: 16px 0; }
         label { display: block; font-size: 11px; font-weight: 700; color: #666666; margin-bottom: 6px; }
 
-        select { 
-            width: 100%; padding: 9px 10px; border: 1px solid #cccccc; border-radius: 0px; 
-            margin-bottom: 16px; font-size: 12px; outline: none; background: #ffffff; color: #4a4a4a;
-        }
+        select { width: 100%; padding: 9px 10px; border: 1px solid #cccccc; border-radius: 0px; margin-bottom: 16px; font-size: 12px; outline: none; background: #ffffff; color: #4a4a4a; }
 
         .compra-row { display: flex; gap: 10px; align-items: center; margin-bottom: 24px; }
-        
-        .cantidad-control { 
-            display: flex; align-items: center; border: 1px solid #cccccc; height: 42px; width: 110px; background: #ffffff;
-        }
+        .cantidad-control { display: flex; align-items: center; border: 1px solid #cccccc; height: 42px; width: 110px; background: #ffffff; }
         .btn-cant { width: 34px; height: 100%; background: transparent; border: none; cursor: pointer; font-size: 14px; color: #4a4a4a; }
         .inp-cant { width: 42px; height: 100%; border: none; border-left: 1px solid #eeeeee; border-right: 1px solid #eeeeee; text-align: center; font-weight: bold; font-size: 13px; color: #4a4a4a; }
 
@@ -424,14 +262,7 @@
         .btn-agregar-beige:hover { background: #ebdcd0; }
 
         .envio-box { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; color: #666666; line-height: 1.4; margin-bottom: 16px; }
-        
-        .truck-icon {
-            width: 20px;
-            height: 20px;
-            fill: #000000;
-            flex-shrink: 0;
-            margin-top: 1px;
-        }
+        .truck-icon { width: 20px; height: 20px; fill: #000000; flex-shrink: 0; margin-top: 1px; }
 
         .pagos-container { border: 1px solid #e5e5e5; border-radius: 8px; padding: 12px; background: #fafafa; }
         .pagos-titulo { font-size: 11px; color: #666666; margin-bottom: 4px; }
@@ -446,22 +277,10 @@
         .total-fila { display: flex; justify-content: space-between; font-size: 15px; font-weight: 700; margin-top: 20px; padding-top: 15px; border-top: 1px solid #e3d7cb; color: #333333; letter-spacing: 0.5px; }
         
         .btn-realizar-compra { 
-            width: 100%; 
-            padding: 14px; 
-            background: #4a3f35; 
-            color: #ffffff; 
-            border: none; 
-            border-radius: 2px; 
-            font-size: 12px; 
-            font-weight: 700; 
-            letter-spacing: 1.5px; 
-            text-transform: uppercase; 
-            cursor: pointer; 
-            margin-top: 16px; 
-            transition: background 0.2s ease; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
+            width: 100%; padding: 14px; background: #4a3f35; color: #ffffff; border: none; 
+            border-radius: 2px; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; 
+            text-transform: uppercase; cursor: pointer; margin-top: 16px; transition: background 0.2s ease; 
+            display: flex; align-items: center; justify-content: center; 
         }
         .btn-realizar-compra:hover { background: #332b24; }
         .carrito-vacio { text-align: center; color: #888888; padding: 24px 0; font-size: 13px; letter-spacing: 0.5px; }
@@ -474,7 +293,7 @@
     <input type="text" id="inputFiltro" class="filter-input" placeholder="🔍 Buscar por nombre o tono..." onkeyup="filtrarProductos()">
 </div>
 
-<!-- CONTENEDOR PRINCIPAL DE PRODUCTOS -->
+<!-- CONTENEDOR PRINCIPAL -->
 <div id="loading">Cargando productos desde Google Sheets...</div>
 <div id="catalogoGrid" class="catalogo-grid"></div>
 
@@ -530,7 +349,7 @@
     <div class="lightbox-instruccion">Toca para zoom / Pellizca / Desliza para salir</div>
 </div>
 
-<!-- MODAL CARRITO DE COMPRAS -->
+<!-- MODAL CARRITO -->
 <div class="modal-carrito-overlay" id="modalCarrito">
     <div class="carrito-container">
         <button type="button" class="btn-cerrar-cart" onclick="cerrarCarrito()">✕</button>
@@ -561,9 +380,9 @@
 </div>
 
 <script>
-// --- CONFIGURACIÓN DE TU ENDPOINT GOOGLE SHEETS ---
-const scriptURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR3MrnF2ljSQja7InTGoRPtg-SpCFpsExOBVzGv9ZdLZsDNxhw6_PfTG1ZTgfB_JntJEgsqyoZ023a0/pub?gid=0&single=true&output=csv
-';
+// --- ENLACE DIRECTO DE TU SHEET ---
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR3MrnF2ljSQja7InTGoRPtg-SpCFpsExOBVzGv9ZdLZsDNxhw6_PfTG1ZTgfB_JntJEgsqyoZ023a0/pub?gid=0&single=true&output=csv';
+
 let productosGlobal = [];
 let productoSeleccionado = null;
 
@@ -571,78 +390,107 @@ const CLAVE_CARRITO = "carrito_global_tienda";
 const TELEFONO_WA = "573212295023";
 const META_ENVIO = 120000;
 
-// Descargar catálogo de Google Sheets de manera tolerante a fallos
+// Descargar y procesar los datos de la hoja en tiempo real
 async function fetchData() {
     try {
-        const response = await fetch(scriptURL, {
-            method: 'GET',
-            redirect: 'follow'
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error HTTP: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (Array.isArray(data)) {
-            productosGlobal = data.map(normalizarProducto);
-            document.getElementById('loading').style.display = 'none';
-            renderizarCatalogo(productosGlobal);
-        } else {
-            throw new Error('La respuesta recibida no es una lista válida de productos.');
-        }
+        const response = await fetch(CSV_URL);
+        if (!response.ok) throw new Error("Error en conexión HTTP");
+        const csvText = await response.text();
+        
+        productosGlobal = parseCSV(csvText);
+        document.getElementById('loading').style.display = 'none';
+        renderizarCatalogo(productosGlobal);
     } catch (error) {
         console.error('Error al cargar datos:', error);
-        document.getElementById('loading').innerText = 'Error al cargar los productos. Por favor verifica la publicación de tu Google Sheet.';
+        document.getElementById('loading').innerText = 'Error al cargar los productos. Por favor reintenta en un momento.';
     }
 }
 
-// Mapeador flexible para admitir distintos nombres de columnas en Google Sheets
-function normalizarProducto(item) {
-    const p = {};
-    for (let key in item) {
-        p[key.toLowerCase().trim()] = item[key];
+// Analizador de CSV tolerante con URLs y caracteres especiales
+function parseCSV(text) {
+    const lines = text.trim().split('\n');
+    if (lines.length <= 1) return [];
+
+    // Parsear fila con respeto de comillas dobles
+    function splitCSVRow(rowText) {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+        
+        for (let i = 0; i < rowText.length; i++) {
+            const char = rowText[i];
+            if (char === '"') {
+                inQuotes = !inQuotes;
+            } else if (char === ',' && !inQuotes) {
+                result.push(current.trim().replace(/^"|"$/g, ''));
+                current = '';
+            } else {
+                current += char;
+            }
+        }
+        result.push(current.trim().replace(/^"|"$/g, ''));
+        return result;
     }
 
-    const nombre = p.nombre || p.titulo || p.product || 'Producto';
-    const precioRaw = p.precio || p.price || 0;
-    const precio = parseFloat(String(precioRaw).replace(/[^0-9.]/g, '')) || 0;
-    const descripcion = p.descripcion || p.description || '';
+    const headers = splitCSVRow(lines[0]).map(h => h.toLowerCase().trim());
+    const items = [];
 
-    // Manejo de múltiples imágenes
-    let imagenes = [];
-    if (p.imagenes) {
-        imagenes = Array.isArray(p.imagenes) ? p.imagenes : String(p.imagenes).split(',').map(s => s.trim());
-    } else if (p.imagen) {
-        imagenes = [p.imagen];
-    } else if (p.image) {
-        imagenes = [p.image];
-    } else {
-        imagenes = ['https://via.placeholder.com/300'];
+    for (let i = 1; i < lines.length; i++) {
+        if (!lines[i].trim()) continue;
+        const row = splitCSVRow(lines[i]);
+        const obj = {};
+
+        headers.forEach((h, idx) => {
+            obj[h] = row[idx] ? row[idx].trim() : '';
+        });
+
+        const nombre = obj.nombre || obj.titulo || 'Producto';
+        const precio = parseFloat(String(obj.precio || 0).replace(/[^0-9.]/g, '')) || 0;
+        const descripcion = obj.descripcion || '';
+
+        // Extraer URLs de imágenes
+        let imgs = [];
+        if (obj.imagenes) {
+            imgs = obj.imagenes.split(',').map(s => s.trim()).filter(s => s.startsWith('http'));
+        }
+        
+        if (imgs.length === 0) {
+            for (let k in obj) {
+                if ((k.includes('imagen') || k.includes('foto') || k.includes('img')) && obj[k] && obj[k].startsWith('http')) {
+                    imgs.push(obj[k]);
+                }
+            }
+        }
+        if (imgs.length === 0) imgs = ['https://via.placeholder.com/300'];
+
+        // Extraer Tonos / Variantes
+        let tonos = [];
+        if (obj.tonos) {
+            tonos = obj.tonos.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        } else if (obj.variantes) {
+            tonos = obj.variantes.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        } else {
+            for (let k in obj) {
+                if ((k.includes('tono') || k.includes('variante') || k.includes('color')) && obj[k]) {
+                    tonos.push(obj[k]);
+                }
+            }
+        }
+
+        items.push({
+            nombre: nombre,
+            precio: precio,
+            descripcion: descripcion,
+            imagen: imgs[0],
+            imagenes: imgs,
+            variantes: tonos
+        });
     }
 
-    // Manejo de variantes / tonos
-    let variantes = [];
-    if (p.variantes) {
-        variantes = Array.isArray(p.variantes) ? p.variantes : String(p.variantes).split(',').map(s => s.trim());
-    } else if (p.tonos) {
-        variantes = Array.isArray(p.tonos) ? p.tonos : String(p.tonos).split(',').map(s => s.trim());
-    } else if (p.variante) {
-        variantes = [p.variante];
-    }
-
-    return {
-        nombre: nombre,
-        precio: precio,
-        descripcion: descripcion,
-        imagen: imagenes[0],
-        imagenes: imagenes,
-        variantes: variantes
-    };
+    return items;
 }
 
-// Renderizar tarjetas con diseño Atenea
+// Renderizar tarjetas estilo Atenea Makeup
 function renderizarCatalogo(productos) {
     const grid = document.getElementById('catalogoGrid');
     grid.innerHTML = '';
@@ -703,7 +551,7 @@ function filtrarProductos() {
     renderizarCatalogo(filtrados);
 }
 
-// Abrir modal configurando la información dinámica
+// Abrir modal con los datos del producto seleccionado
 function abrirModalPorIndice(index) {
     const prod = productosGlobal[index];
     if (!prod) return;
@@ -713,32 +561,29 @@ function abrirModalPorIndice(index) {
     document.getElementById("modalPrecio").innerText = `$${Number(prod.precio).toLocaleString('es-CO')} COP`;
     document.getElementById("modalDescripcion").innerText = prod.descripcion || '';
 
-    // Llenar selector de variantes
+    // Llenar selector de variantes/tonos
     const select = document.getElementById("selVariante");
     select.innerHTML = '';
     if (prod.variantes && prod.variantes.length > 0) {
         prod.variantes.forEach(v => {
             const opt = document.createElement('option');
-            opt.value = v;
-            opt.innerText = v;
+            opt.value = v; opt.innerText = v;
             select.appendChild(opt);
         });
     } else {
         const opt = document.createElement('option');
-        opt.value = "Única";
-        opt.innerText = "Opción Única";
+        opt.value = "Única"; opt.innerText = "Opción Única";
         select.appendChild(opt);
     }
 
-    // Llenar carrusel de imágenes
+    // Llenar carrusel
     const carrusel = document.getElementById("carruselImagenes");
     carrusel.innerHTML = '';
     const imgs = (prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes : [prod.imagen];
 
     imgs.forEach(imgUrl => {
         const img = document.createElement('img');
-        img.src = imgUrl;
-        img.alt = prod.nombre;
+        img.src = imgUrl; img.alt = prod.nombre;
         img.onclick = () => abrirZoom(imgUrl);
         carrusel.appendChild(img);
     });
@@ -829,21 +674,15 @@ function habilitarSwipeCerrarModal(idContenedor, callbackCerrar, selectoresIgnor
 
     contenedor.addEventListener('touchstart', e => {
         if (selectoresIgnorar.some(selector => e.target.closest(selector))) return;
-        xInicial = e.changedTouches[0].screenX;
-        yInicial = e.changedTouches[0].screenY;
+        xInicial = e.changedTouches[0].screenX; yInicial = e.changedTouches[0].screenY;
     }, { passive: true });
 
     contenedor.addEventListener('touchend', e => {
         if (selectoresIgnorar.some(selector => e.target.closest(selector))) return;
-        let xFinal = e.changedTouches[0].screenX;
-        let yFinal = e.changedTouches[0].screenY;
+        let xFinal = e.changedTouches[0].screenX, yFinal = e.changedTouches[0].screenY;
+        let diferenciaX = xFinal - xInicial, diferenciaY = yFinal - yInicial;
 
-        let diferenciaX = xFinal - xInicial;
-        let diferenciaY = yFinal - yInicial;
-
-        if (diferenciaX > 70 && Math.abs(diferenciaX) > Math.abs(diferenciaY)) {
-            callbackCerrar();
-        }
+        if (diferenciaX > 70 && Math.abs(diferenciaX) > Math.abs(diferenciaY)) { callbackCerrar(); }
     }, { passive: true });
 }
 
@@ -851,12 +690,7 @@ habilitarSwipeCerrarModal('modalProducto', cerrarModal, ['.carrusel-container', 
 habilitarSwipeCerrarModal('modalCarrito', cerrarCarrito, ['.cant-contros-cart']);
 
 // --- LIGHTBOX Y ZOOM ---
-let scale = 1;
-let pointX = 0, pointY = 0;
-let startX = 0, startY = 0;
-let initialDist = 0, initialScale = 1;
-let isTouching = false;
-
+let scale = 1, pointX = 0, pointY = 0, startX = 0, startY = 0, initialDist = 0, initialScale = 1, isTouching = false;
 const viewport = document.getElementById("zoomViewport");
 const imgTarget = document.getElementById("imgZoomTarget");
 const ZOOM_NIVEL_HOVER = 3.2;
@@ -878,20 +712,16 @@ function cerrarZoom() { document.getElementById("lightboxZoom").style.display = 
 viewport.addEventListener('mousemove', (e) => {
     if (isTouching) return;
     const rect = viewport.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
+    const x = e.clientX - rect.left, y = e.clientY - rect.top;
     scale = ZOOM_NIVEL_HOVER;
-    const factorAmp = 2.2;
-    pointX = (rect.width / 2 - x) * factorAmp;
-    pointY = (rect.height / 2 - y) * factorAmp;
+    pointX = (rect.width / 2 - x) * 2.2;
+    pointY = (rect.height / 2 - y) * 2.2;
     updateTransform();
 });
 
 viewport.addEventListener('mouseleave', () => {
     if (isTouching) return;
-    scale = 1; pointX = 0; pointY = 0;
-    updateTransform();
+    scale = 1; pointX = 0; pointY = 0; updateTransform();
 });
 
 let touchStartTime = 0, isTap = false, touchStartX = 0, touchStartY = 0;
@@ -899,52 +729,26 @@ let touchStartTime = 0, isTap = false, touchStartX = 0, touchStartY = 0;
 viewport.addEventListener('touchstart', (e) => {
     isTouching = true;
     if (e.touches.length === 1) {
-        isTap = true;
-        touchStartTime = Date.now();
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-
-        if (scale > 1) {
-            startX = e.touches[0].clientX - pointX;
-            startY = e.touches[0].clientY - pointY;
-        }
+        isTap = true; touchStartTime = Date.now();
+        touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY;
+        if (scale > 1) { startX = e.touches[0].clientX - pointX; startY = e.touches[0].clientY - pointY; }
     } else if (e.touches.length === 2) {
         isTap = false;
-        initialDist = Math.hypot(
-            e.touches[0].clientX - e.touches[1].clientX,
-            e.touches[0].clientY - e.touches[1].clientY
-        );
+        initialDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
         initialScale = scale;
     }
 }, { passive: false });
 
 viewport.addEventListener('touchmove', (e) => {
     if (e.touches.length === 1) {
-        const moveX = e.touches[0].clientX;
-        const moveY = e.touches[0].clientY;
-        
-        if (Math.abs(moveX - touchStartX) > 10 || Math.abs(moveY - touchStartY) > 10) {
-            isTap = false;
-        }
-
-        if (scale > 1) {
-            e.preventDefault();
-            pointX = moveX - startX;
-            pointY = moveY - startY;
-            updateTransform();
-        } else {
-            e.preventDefault();
-        }
+        const moveX = e.touches[0].clientX, moveY = e.touches[0].clientY;
+        if (Math.abs(moveX - touchStartX) > 10 || Math.abs(moveY - touchStartY) > 10) isTap = false;
+        if (scale > 1) { e.preventDefault(); pointX = moveX - startX; pointY = moveY - startY; updateTransform(); }
+        else { e.preventDefault(); }
     } else if (e.touches.length === 2) {
-        isTap = false;
-        e.preventDefault();
-        const dist = Math.hypot(
-            e.touches[0].clientX - e.touches[1].clientX,
-            e.touches[0].clientY - e.touches[1].clientY
-        );
-        const factor = dist / initialDist;
-        scale = initialScale * factor;
-        
+        isTap = false; e.preventDefault();
+        const dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        scale = initialScale * (dist / initialDist);
         if (scale < 1) scale = 1;
         updateTransform();
     }
@@ -953,23 +757,13 @@ viewport.addEventListener('touchmove', (e) => {
 viewport.addEventListener('touchend', (e) => {
     if (e.changedTouches.length === 1 && e.touches.length === 0) {
         const touchEndTime = Date.now();
-        const endX = e.changedTouches[0].clientX;
-        const endY = e.changedTouches[0].clientY;
-
+        const endX = e.changedTouches[0].clientX, endY = e.changedTouches[0].clientY;
         if (isTap && (touchEndTime - touchStartTime < 300)) {
-            if (scale === 1) {
-                scale = 2.5; pointX = 0; pointY = 0; updateTransform();
-            } else {
-                scale = 1; pointX = 0; pointY = 0; updateTransform();
-            }
-        } 
-        else if (scale === 1 && !isTap) {
-            const diffX = endX - touchStartX;
-            const diffY = endY - touchStartY;
-            if (Math.abs(diffX) > 80 || Math.abs(diffY) > 80) { cerrarZoom(); }
+            scale = (scale === 1) ? 2.5 : 1; pointX = 0; pointY = 0; updateTransform();
+        } else if (scale === 1 && !isTap) {
+            if (Math.abs(endX - touchStartX) > 80 || Math.abs(endY - touchStartY) > 80) cerrarZoom();
         }
     }
-
     if (e.touches.length === 0) {
         isTouching = false;
         if (scale <= 1.05) { scale = 1; pointX = 0; pointY = 0; updateTransform(); }
@@ -1100,7 +894,7 @@ function enviarPedido() {
     cerrarCarrito();
 }
 
-// Inicialización
+// Inicializar la carga inmediata
 fetchData();
 cargarCarrito();
 </script>
