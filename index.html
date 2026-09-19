@@ -41,14 +41,16 @@
             letter-spacing: 1px;
         }
 
-        .catalogo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 15px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 10px;
-        }
+.catalogo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 10px;
+    box-sizing: border-box;
+ }
 
         @media (min-width: 600px) {
             .catalogo-grid {
