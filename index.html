@@ -15,17 +15,18 @@
             background: #fdfbf7; 
             color: #4a3f35;
             overflow-x: hidden;
-            scrollbar-width: thin; 
-            scrollbar-color: rgba(74, 63, 53, 0.2) transparent;
+            scrollbar-width: none; /* Ocultar scrollbar en Firefox */
+            -ms-overflow-style: none; /* Ocultar scrollbar en IE/Edge */
         }
 
-        /* --- DESLIZADORES (SCROLLBARS) SUTILES --- */
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(74, 63, 53, 0.2); border-radius: 10px; backdrop-filter: blur(2px); }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(74, 63, 53, 0.4); }
+        /* --- DESLIZADORES (SCROLLBARS) OCULTOS Y ULTRA SUTILES --- */
+        ::-webkit-scrollbar {
+            width: 0px;
+            height: 0px;
+            background: transparent;
+        }
 
-        /* --- GRILLA Y TARJETAS ATENEA --- */
+        /* --- GRILLA Y CENTRADO DE PRODUCTOS (CORRECCIÓN ESPACIO EN COMPUTADOR) --- */
         #loading {
             text-align: center;
             padding: 40px;
@@ -35,8 +36,9 @@
         }
 
         .catalogo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; /* Centrar para eliminar huecos a la derecha */
             gap: 20px;
             max-width: 1200px;
             margin: 20px auto;
@@ -45,6 +47,7 @@
 
         .card-atenea {
             width: 100%;
+            max-width: 240px; /* Tamaño fijo uniforme para la tarjeta */
             background: #faf6f0;
             border: 1px solid #f0e6d8;
             border-radius: 4px;
@@ -120,7 +123,10 @@
             background: #ffffff; width: 90vw; max-width: 580px; max-height: 90vh;
             border-radius: 4px; overflow-y: auto; position: relative; padding: 24px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.15); color: #4a4a4a; outline: none;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
+        .modal-content::-webkit-scrollbar { display: none; }
 
         /* Carrusel Wrapper */
         .carrusel-wrapper { position: relative; width: 100%; margin-bottom: 16px; }
@@ -130,7 +136,10 @@
             display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
             gap: 8px; border-radius: 4px; background: #fdfbf7;
             outline: none; scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
+        .carrusel-container::-webkit-scrollbar { display: none; }
 
         .carrusel-container img {
             width: 100%; height: 100%; aspect-ratio: 1 / 1;
@@ -138,7 +147,7 @@
             cursor: zoom-in; background: #ffffff; border-radius: 4px;
         }
 
-        /* FLECHAS ULTRA TRASLÚCIDAS Y SUTILES */
+        /* FLECHAS TRASLÚCIDAS SUTILES */
         .carrusel-arrow {
             position: absolute; top: 50%; transform: translateY(-50%);
             width: 28px; height: 28px; 
@@ -200,7 +209,10 @@
             border: 1px solid #f0e6d8; border-radius: 6px; padding: 24px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.12); position: relative;
             max-height: 85vh; overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
+        .carrito-container::-webkit-scrollbar { display: none; }
 
         .header-carrito { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid #e3d7cb; padding-bottom: 10px; }
         .header-carrito-txt { font-size: 14px; font-weight: 700; letter-spacing: 1.5px; color: #4a3f35; text-transform: uppercase; }
@@ -249,7 +261,6 @@
         .btn-cant-cart { width: 26px; height: 26px; background: transparent; border: none; cursor: pointer; font-weight: bold; color: #4a4a4a; }
         .num-cant-cart { width: 28px; text-align: center; font-size: 12px; font-weight: 700; color: #4a4a4a; border-left: 1px solid #eeeeee; border-right: 1px solid #eeeeee; }
         
-        /* BOTÓN DE CANECA PARA ELIMINAR */
         .btn-eliminar-item {
             background: transparent;
             border: none;
@@ -372,7 +383,7 @@ const CLAVE_CARRITO = "carrito_global_tienda";
 const TELEFONO_WA = "573212295023";
 const META_ENVIO = 120000;
 
-// Descargar y procesar los datos de la hoja en tiempo real
+// Descargar y procesar los datos
 async function fetchData() {
     try {
         const response = await fetch(CSV_URL);
@@ -381,7 +392,7 @@ async function fetchData() {
         
         let productosProcesados = parseCSV(csvText);
 
-        // FILTRADO AUTOMÁTICO POR URL SI SE ESPECIFICA CATEGORÍA (Ejemplo: ?categoria=BASES)
+        // FILTRADO AUTOMÁTICO POR URL SI SE ESPECIFICA CATEGORÍA
         const urlParams = new URLSearchParams(window.location.search);
         const categoriaFiltro = urlParams.get('categoria') || urlParams.get('cat');
 
@@ -486,7 +497,7 @@ function parseCSV(text) {
     return items;
 }
 
-// Renderizar tarjetas estilo Atenea Makeup
+// Renderizar tarjetas estilo Atenea
 function renderizarCatalogo(productos) {
     const grid = document.getElementById('catalogoGrid');
     grid.innerHTML = '';
@@ -529,7 +540,7 @@ function renderizarCatalogo(productos) {
     actualizarBadges();
 }
 
-// Abrir modal con los datos del producto seleccionado
+// Abrir modal asegurando la primera imagen como principal
 function abrirModalPorIndice(index) {
     const prod = productosGlobal[index];
     if (!prod) return;
@@ -554,10 +565,21 @@ function abrirModalPorIndice(index) {
         select.appendChild(opt);
     }
 
-    // Llenar carrusel
+    // Llenar carrusel asegurando que la imagen principal sea siempre la primera
     const carrusel = document.getElementById("carruselImagenes");
     carrusel.innerHTML = '';
-    const imgs = (prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes : [prod.imagen];
+
+    let imgs = [];
+    if (prod.imagenes && prod.imagenes.length > 0) {
+        imgs = [...prod.imagenes];
+        // Garantizar que la foto del catálogo principal esté en la posición 0
+        if (imgs.includes(prod.imagen)) {
+            imgs = imgs.filter(img => img !== prod.imagen);
+            imgs.unshift(prod.imagen);
+        }
+    } else {
+        imgs = [prod.imagen];
+    }
 
     imgs.forEach(imgUrl => {
         const img = document.createElement('img');
@@ -566,6 +588,7 @@ function abrirModalPorIndice(index) {
         carrusel.appendChild(img);
     });
 
+    carrusel.scrollLeft = 0; // Reiniciar posición del scroll al inicio
     document.getElementById("inpCant").value = 1;
     abrirModal();
 }
@@ -574,7 +597,10 @@ function abrirModal() {
     document.getElementById("modalProducto").style.display = "flex"; 
     requestAnimationFrame(() => {
         const carrusel = document.getElementById("carruselImagenes");
-        if (carrusel) carrusel.focus();
+        if (carrusel) {
+            carrusel.scrollLeft = 0;
+            carrusel.focus();
+        }
         actualizarFlechas();
     });
     setTimeout(actualizarFlechas, 100);
@@ -818,7 +844,6 @@ function cargarCarrito() {
     actualizarBarraEnvio(totalPagar);
 }
 
-// ELIMINAR PRODUCTO COMPLETO DESDE LA CANECA
 function eliminarProductoDirecto(index) {
     let carrito = JSON.parse(localStorage.getItem(CLAVE_CARRITO) || "[]");
     if (carrito[index]) {
