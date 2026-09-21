@@ -131,15 +131,20 @@
             align-items: center; justify-content: center; padding: 15px;
         }
 
+        /* ESTILO UNIFICADO DE DESPLAZAMIENTO VERTICAL (TOMADO DEL CARRITO SECUNDARIO) */
         .modal-content, .carrito-container {
-            background: #ffffff; width: 90vw; max-width: 580px; max-height: 85vh;
-            border-radius: 6px; overflow-y: auto; position: relative; padding: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15); color: #4a4a4a; outline: none;
+            background: #faf6f0; width: 90vw; max-width: 440px; max-height: 85vh;
+            border: 1px solid #f0e6d8; border-radius: 6px; overflow-y: auto; 
+            position: relative; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.12); 
+            color: #4a4a4a; outline: none;
         }
 
-        .carrito-container { max-width: 440px; background: #faf6f0; border: 1px solid #f0e6d8; }
+        .modal-content {
+            max-width: 580px;
+            background: #ffffff;
+        }
 
-        /* BARRAS DESLIZADORAS VERTICALES TRASLÚCIDAS Y SUTILES EN COMPUTADOR */
+        /* BARRAS DESLIZADORAS VERTICALES TRASLÚCIDAS Y SUTILES EN COMPUTADOR PARA AMBOS */
         @media (min-width: 1024px) {
             .modal-content, .carrito-container {
                 scrollbar-width: thin;
