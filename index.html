@@ -25,9 +25,10 @@
             font-family: 'Lato', sans-serif; 
             background: #fdfbf7; 
             color: #4a3f35;
-            width: 100%;
-            height: auto; 
+            width: 100vw;
+            max-width: 100%;
             overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
         }
 
         /* --- GRILLA RESPONSIVA ADAPTABLE A GOOGLE SITES --- */
@@ -44,20 +45,20 @@
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 15px;
             width: 100%;
-            max-width: 100%;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 10px;
             box-sizing: border-box;
-            justify-content: center; /* Centra los productos si hay pocos */
+            justify-content: center;
         }
 
-        /* AJUSTE ESPECÍFICO PARA MÓVILES: Ancho perfecto y centrado sin desorden */
         @media (max-width: 600px) {
             .catalogo-grid {
                 grid-template-columns: 1fr;
-                max-width: 320px; /* Tamaño de tarjeta estético y ordenado en cel */
-                margin: 0 auto;
-                padding: 10px;
+                width: 100%;
+                max-width: 100%;
+                padding: 10px 15px;
+                gap: 12px;
             }
         }
 
