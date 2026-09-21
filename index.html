@@ -123,7 +123,7 @@
             padding: 2px 6px; font-size: 9px; font-weight: 700;
         }
 
-        /* --- MODALES Y OVERLAYS (CON SCROLL VERTICAL UNIFICADO) --- */
+        /* --- MODALES Y OVERLAYS --- */
         .modal-overlay, .modal-carrito-overlay {
             display: none; position: fixed; top: 0; left: 0;
             width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4);
@@ -131,12 +131,19 @@
             align-items: center; justify-content: center; padding: 15px;
         }
 
+        /* VENTANA EMERGENTE CON DESPLAZAMIENTO VERTICAL (SCROLL) */
         .modal-content {
-            background: #ffffff; width: 90vw; max-width: 580px; 
-            max-height: 85vh; /* Scroll vertical aplicado */
-            overflow-y: auto;  /* Desplazamiento vertical automático */
-            border-radius: 4px; position: relative; padding: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15); color: #4a4a4a; outline: none;
+            background: #ffffff; 
+            width: 90vw; 
+            max-width: 580px; 
+            max-height: 85vh; /* Altura máxima para activar scroll vertical */
+            border-radius: 4px; 
+            overflow-y: auto;  /* Permite deslizar verticalmente con mouse o teclado */
+            position: relative; 
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
+            color: #4a4a4a; 
+            outline: none;
         }
 
         /* Carrusel Wrapper */
@@ -211,13 +218,19 @@
             backdrop-filter: blur(4px); white-space: nowrap; border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Carrito con Scroll Vertical */
+        /* CARRITO CON DESPLAZAMIENTO VERTICAL (SCROLL) */
         .carrito-container { 
-            width: 100%; max-width: 440px; background: #faf6f0;
-            border: 1px solid #f0e6d8; border-radius: 6px; padding: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.12); position: relative;
-            max-height: 85vh; /* Scroll vertical aplicado */
-            overflow-y: auto;  /* Desplazamiento vertical automático */
+            width: 100%; 
+            max-width: 440px; 
+            background: #faf6f0;
+            border: 1px solid #f0e6d8; 
+            border-radius: 6px; 
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12); 
+            position: relative;
+            max-height: 85vh; /* Altura máxima para activar scroll vertical */
+            overflow-y: auto;  /* Permite deslizar verticalmente con mouse o teclado */
+            outline: none;
         }
 
         .header-carrito { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid #e3d7cb; padding-bottom: 10px; }
@@ -351,7 +364,7 @@
 
 <!-- MODAL CARRITO -->
 <div class="modal-carrito-overlay" id="modalCarrito">
-    <div class="carrito-container">
+    <div class="carrito-container" id="carritoContainer" tabindex="0">
         <button type="button" class="btn-cerrar-cart" onclick="cerrarCarrito()">✕</button>
         
         <div class="header-carrito">
@@ -419,7 +432,7 @@ async function fetchData() {
     }
 }
 
-// Analizador de CSV optimizado para leer 'imagen' y 'imagenes'
+// Analizador de CSV
 function parseCSV(text) {
     const lines = text.trim().split('\n');
     if (lines.length <= 1) return [];
@@ -648,7 +661,7 @@ function actualizarFlechas() {
 carrusel.addEventListener("scroll", actualizarFlechas);
 window.addEventListener("resize", actualizarFlechas);
 
-// --- TECLADO GLOBAL ---
+// --- TECLADO GLOBAL (SOPORTE COMPLETO PARA FLECHAS Y SCROLL VERTICAL) ---
 document.addEventListener("keydown", (e) => {
     const modalProductoVisible = document.getElementById("modalProducto").style.display === "flex";
     const modalCarritoVisible = document.getElementById("modalCarrito").style.display === "flex";
@@ -664,16 +677,37 @@ document.addEventListener("keydown", (e) => {
         if (modalProductoVisible) { cerrarModal(); return; }
     }
 
+    // Navegación en el Carrito con teclado
+    if (modalCarritoVisible && !lightboxVisible) {
+        const carritoContainer = document.getElementById("carritoContainer");
+        if (e.key === "ArrowDown") { e.preventDefault(); carritoContainer.scrollBy({ top: 60, behavior: "smooth" }); } 
+        else if (e.key === "ArrowUp") { e.preventDefault(); carritoContainer.scrollBy({ top: -60, behavior: "smooth" }); }
+        return;
+    }
+
+    // Navegación en la Ventana Emergente de Producto con teclado
     if (modalProductoVisible && !lightboxVisible && !modalCarritoVisible) {
         const paso = carrusel.clientWidth;
         const modalContent = document.getElementById("modalContent");
 
-        if (e.key === "ArrowRight") { e.preventDefault(); carrusel.scrollBy({ left: paso, behavior: "smooth" }); } 
-        else if (e.key === "ArrowLeft") { e.preventDefault(); carrusel.scrollBy({ left: -paso, behavior: "smooth" }); } 
-        else if (e.key === "ArrowDown") { e.preventDefault(); modalContent.scrollBy({ top: 100, behavior: "smooth" }); } 
-        else if (e.key === "ArrowUp") { e.preventDefault(); modalContent.scrollBy({ top: -100, behavior: "smooth" }); } 
+        if (e.key === "ArrowRight") { 
+            e.preventDefault(); 
+            carrusel.scrollBy({ left: paso, behavior: "smooth" }); 
+        } 
+        else if (e.key === "ArrowLeft") { 
+            e.preventDefault(); 
+            carrusel.scrollBy({ left: -paso, behavior: "smooth" }); 
+        } 
+        else if (e.key === "ArrowDown") { 
+            e.preventDefault(); 
+            modalContent.scrollBy({ top: 80, behavior: "smooth" }); 
+        } 
+        else if (e.key === "ArrowUp") { 
+            e.preventDefault(); 
+            modalContent.scrollBy({ top: -80, behavior: "smooth" }); 
+        } 
         else if (e.key === "Enter") {
-            if (document.activeElement === carrusel) {
+            if (document.activeElement === carrusel || carrusel.contains(document.activeElement)) {
                 e.preventDefault();
                 const imgs = Array.from(carrusel.querySelectorAll("img"));
                 const scrollPos = carrusel.scrollLeft;
@@ -815,7 +849,14 @@ function agregarItem() {
     abrirCarrito();
 }
 
-function abrirCarrito() { document.getElementById("modalCarrito").style.display = "flex"; }
+function abrirCarrito() { 
+    document.getElementById("modalCarrito").style.display = "flex"; 
+    setTimeout(() => {
+        const cartContainer = document.getElementById("carritoContainer");
+        if (cartContainer) cartContainer.focus();
+    }, 100);
+}
+
 function cerrarCarrito() { document.getElementById("modalCarrito").style.display = "none"; }
 
 function cargarCarrito() {
