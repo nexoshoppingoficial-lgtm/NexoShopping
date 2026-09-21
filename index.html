@@ -123,7 +123,7 @@
             padding: 2px 6px; font-size: 9px; font-weight: 700;
         }
 
-        /* --- MODALES Y OVERLAYS --- */
+        /* --- MODALES Y OVERLAYS (CON SCROLL VERTICAL UNIFICADO) --- */
         .modal-overlay, .modal-carrito-overlay {
             display: none; position: fixed; top: 0; left: 0;
             width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4);
@@ -132,8 +132,10 @@
         }
 
         .modal-content {
-            background: #ffffff; width: 90vw; max-width: 580px; max-height: 90vh;
-            border-radius: 4px; overflow-y: auto; position: relative; padding: 24px;
+            background: #ffffff; width: 90vw; max-width: 580px; 
+            max-height: 85vh; /* Scroll vertical aplicado */
+            overflow-y: auto;  /* Desplazamiento vertical automático */
+            border-radius: 4px; position: relative; padding: 24px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.15); color: #4a4a4a; outline: none;
         }
 
@@ -209,12 +211,13 @@
             backdrop-filter: blur(4px); white-space: nowrap; border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Carrito */
+        /* Carrito con Scroll Vertical */
         .carrito-container { 
             width: 100%; max-width: 440px; background: #faf6f0;
             border: 1px solid #f0e6d8; border-radius: 6px; padding: 24px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.12); position: relative;
-            max-height: 85vh; overflow-y: auto;
+            max-height: 85vh; /* Scroll vertical aplicado */
+            overflow-y: auto;  /* Desplazamiento vertical automático */
         }
 
         .header-carrito { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid #e3d7cb; padding-bottom: 10px; }
@@ -476,7 +479,6 @@ function parseCSV(text) {
         if (campoSecundario) {
             imgsSecundarias = campoSecundario.split(',').map(s => s.trim()).filter(s => s.startsWith('http'));
         } else {
-            // Si no hay columna específica 'imagenes', busca columnas adicionales
             for (let k in obj) {
                 if ((k === 'imagenes' || k.includes('carrusel') || k.includes('foto2') || k.includes('foto3') || k.includes('img2')) && obj[k]) {
                     let splitVal = obj[k].split(',').map(s => s.trim()).filter(s => s.startsWith('http'));
@@ -485,7 +487,6 @@ function parseCSV(text) {
             }
         }
 
-        // Combinar lista completa de imágenes para el producto
         let todasLasImgs = [imgPrincipal, ...imgsSecundarias];
 
         // Extraer Tonos / Variantes
@@ -531,7 +532,6 @@ function renderizarCatalogo(productos) {
         card.className = 'card-atenea';
         card.setAttribute('tabindex', '0');
 
-        // Imagen que aparece al pasar el mouse (si hay más de una imagen)
         const hoverImg = (prod.imagenes && prod.imagenes.length > 1) ? prod.imagenes[1] : prod.imagen;
 
         card.innerHTML = `
@@ -591,7 +591,7 @@ function abrirModalPorIndice(index) {
     
     let imgs = (prod.imagenes && prod.imagenes.length > 0) ? [...prod.imagenes] : [prod.imagen];
     if (imgs.length > 1) {
-        imgs = imgs.slice(1); // Omitir la principal para el modal si hay secundarias
+        imgs = imgs.slice(1);
     }
 
     imgs.forEach(imgUrl => {
