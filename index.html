@@ -131,10 +131,33 @@
             align-items: center; justify-content: center; padding: 15px;
         }
 
+        /* BARRA DESLIZADORA VERTICAL TRASLÚCIDA Y SUTIL SÓLO PARA COMPUTADOR EN EL MODAL */
         .modal-content {
             background: #ffffff; width: 90vw; max-width: 580px; max-height: 90vh;
             border-radius: 4px; overflow-y: auto; position: relative; padding: 24px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.15); color: #4a4a4a; outline: none;
+        }
+
+        @media (min-width: 768px) {
+            .modal-content {
+                scrollbar-width: thin;
+                scrollbar-color: rgba(74, 63, 53, 0.2) transparent;
+            }
+            .modal-content::-webkit-scrollbar {
+                display: block;
+                width: 6px;
+                background: transparent;
+            }
+            .modal-content::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .modal-content::-webkit-scrollbar-thumb {
+                background: rgba(74, 63, 53, 0.2);
+                border-radius: 10px;
+            }
+            .modal-content::-webkit-scrollbar-thumb:hover {
+                background: rgba(74, 63, 53, 0.4);
+            }
         }
 
         /* Carrusel Wrapper */
@@ -645,7 +668,7 @@ function actualizarFlechas() {
 carrusel.addEventListener("scroll", actualizarFlechas);
 window.addEventListener("resize", actualizarFlechas);
 
-// --- TECLADO GLOBAL (SOPORTE FLECHAS IZQ/DER Y ARRIBA/ABAJO) ---
+// --- TECLADO GLOBAL Y FLECHAS VERTICALES EN MODAL ---
 document.addEventListener("keydown", (e) => {
     const modalProductoVisible = document.getElementById("modalProducto").style.display === "flex";
     const modalCarritoVisible = document.getElementById("modalCarrito").style.display === "flex";
@@ -665,26 +688,10 @@ document.addEventListener("keydown", (e) => {
         const paso = carrusel.clientWidth;
         const modalContent = document.getElementById("modalContent");
 
-        if (e.key === "ArrowRight") { 
-            e.preventDefault(); 
-            carrusel.scrollBy({ left: paso, behavior: "smooth" }); 
-        } 
-        else if (e.key === "ArrowLeft") { 
-            e.preventDefault(); 
-            carrusel.scrollBy({ left: -paso, behavior: "smooth" }); 
-        } 
-        else if (e.key === "ArrowDown") { 
-            e.preventDefault(); 
-            // Permite usar la flecha abajo tanto para mover el carrusel a la siguiente foto como para deslizar el modal
-            carrusel.scrollBy({ left: paso, behavior: "smooth" });
-            modalContent.scrollBy({ top: 60, behavior: "smooth" }); 
-        } 
-        else if (e.key === "ArrowUp") { 
-            e.preventDefault(); 
-            // Permite usar la flecha arriba tanto para retroceder el carrusel como para subir en el modal
-            carrusel.scrollBy({ left: -paso, behavior: "smooth" });
-            modalContent.scrollBy({ top: -60, behavior: "smooth" }); 
-        } 
+        if (e.key === "ArrowRight") { e.preventDefault(); carrusel.scrollBy({ left: paso, behavior: "smooth" }); } 
+        else if (e.key === "ArrowLeft") { e.preventDefault(); carrusel.scrollBy({ left: -paso, behavior: "smooth" }); } 
+        else if (e.key === "ArrowDown") { e.preventDefault(); modalContent.scrollBy({ top: 80, behavior: "smooth" }); } 
+        else if (e.key === "ArrowUp") { e.preventDefault(); modalContent.scrollBy({ top: -80, behavior: "smooth" }); } 
         else if (e.key === "Enter") {
             if (document.activeElement === carrusel) {
                 e.preventDefault();
