@@ -131,19 +131,10 @@
             align-items: center; justify-content: center; padding: 15px;
         }
 
-        /* VENTANA EMERGENTE CON DESPLAZAMIENTO VERTICAL (SCROLL) */
         .modal-content {
-            background: #ffffff; 
-            width: 90vw; 
-            max-width: 580px; 
-            max-height: 85vh; /* Altura máxima para activar scroll vertical */
-            border-radius: 4px; 
-            overflow-y: auto;  /* Permite deslizar verticalmente con mouse o teclado */
-            position: relative; 
-            padding: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
-            color: #4a4a4a; 
-            outline: none;
+            background: #ffffff; width: 90vw; max-width: 580px; max-height: 90vh;
+            border-radius: 4px; overflow-y: auto; position: relative; padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); color: #4a4a4a; outline: none;
         }
 
         /* Carrusel Wrapper */
@@ -218,19 +209,12 @@
             backdrop-filter: blur(4px); white-space: nowrap; border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* CARRITO CON DESPLAZAMIENTO VERTICAL (SCROLL) */
+        /* Carrito */
         .carrito-container { 
-            width: 100%; 
-            max-width: 440px; 
-            background: #faf6f0;
-            border: 1px solid #f0e6d8; 
-            border-radius: 6px; 
-            padding: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.12); 
-            position: relative;
-            max-height: 85vh; /* Altura máxima para activar scroll vertical */
-            overflow-y: auto;  /* Permite deslizar verticalmente con mouse o teclado */
-            outline: none;
+            width: 100%; max-width: 440px; background: #faf6f0;
+            border: 1px solid #f0e6d8; border-radius: 6px; padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12); position: relative;
+            max-height: 85vh; overflow-y: auto;
         }
 
         .header-carrito { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid #e3d7cb; padding-bottom: 10px; }
@@ -364,7 +348,7 @@
 
 <!-- MODAL CARRITO -->
 <div class="modal-carrito-overlay" id="modalCarrito">
-    <div class="carrito-container" id="carritoContainer" tabindex="0">
+    <div class="carrito-container">
         <button type="button" class="btn-cerrar-cart" onclick="cerrarCarrito()">✕</button>
         
         <div class="header-carrito">
@@ -432,7 +416,7 @@ async function fetchData() {
     }
 }
 
-// Analizador de CSV
+// Analizador de CSV optimizado para leer 'imagen' y 'imagenes'
 function parseCSV(text) {
     const lines = text.trim().split('\n');
     if (lines.length <= 1) return [];
@@ -492,6 +476,7 @@ function parseCSV(text) {
         if (campoSecundario) {
             imgsSecundarias = campoSecundario.split(',').map(s => s.trim()).filter(s => s.startsWith('http'));
         } else {
+            // Si no hay columna específica 'imagenes', busca columnas adicionales
             for (let k in obj) {
                 if ((k === 'imagenes' || k.includes('carrusel') || k.includes('foto2') || k.includes('foto3') || k.includes('img2')) && obj[k]) {
                     let splitVal = obj[k].split(',').map(s => s.trim()).filter(s => s.startsWith('http'));
@@ -500,6 +485,7 @@ function parseCSV(text) {
             }
         }
 
+        // Combinar lista completa de imágenes para el producto
         let todasLasImgs = [imgPrincipal, ...imgsSecundarias];
 
         // Extraer Tonos / Variantes
@@ -545,6 +531,7 @@ function renderizarCatalogo(productos) {
         card.className = 'card-atenea';
         card.setAttribute('tabindex', '0');
 
+        // Imagen que aparece al pasar el mouse (si hay más de una imagen)
         const hoverImg = (prod.imagenes && prod.imagenes.length > 1) ? prod.imagenes[1] : prod.imagen;
 
         card.innerHTML = `
@@ -604,7 +591,7 @@ function abrirModalPorIndice(index) {
     
     let imgs = (prod.imagenes && prod.imagenes.length > 0) ? [...prod.imagenes] : [prod.imagen];
     if (imgs.length > 1) {
-        imgs = imgs.slice(1);
+        imgs = imgs.slice(1); // Omitir la principal para el modal si hay secundarias
     }
 
     imgs.forEach(imgUrl => {
@@ -661,7 +648,7 @@ function actualizarFlechas() {
 carrusel.addEventListener("scroll", actualizarFlechas);
 window.addEventListener("resize", actualizarFlechas);
 
-// --- TECLADO GLOBAL (SOPORTE COMPLETO PARA FLECHAS Y SCROLL VERTICAL) ---
+// --- TECLADO GLOBAL ---
 document.addEventListener("keydown", (e) => {
     const modalProductoVisible = document.getElementById("modalProducto").style.display === "flex";
     const modalCarritoVisible = document.getElementById("modalCarrito").style.display === "flex";
@@ -677,37 +664,16 @@ document.addEventListener("keydown", (e) => {
         if (modalProductoVisible) { cerrarModal(); return; }
     }
 
-    // Navegación en el Carrito con teclado
-    if (modalCarritoVisible && !lightboxVisible) {
-        const carritoContainer = document.getElementById("carritoContainer");
-        if (e.key === "ArrowDown") { e.preventDefault(); carritoContainer.scrollBy({ top: 60, behavior: "smooth" }); } 
-        else if (e.key === "ArrowUp") { e.preventDefault(); carritoContainer.scrollBy({ top: -60, behavior: "smooth" }); }
-        return;
-    }
-
-    // Navegación en la Ventana Emergente de Producto con teclado
     if (modalProductoVisible && !lightboxVisible && !modalCarritoVisible) {
         const paso = carrusel.clientWidth;
         const modalContent = document.getElementById("modalContent");
 
-        if (e.key === "ArrowRight") { 
-            e.preventDefault(); 
-            carrusel.scrollBy({ left: paso, behavior: "smooth" }); 
-        } 
-        else if (e.key === "ArrowLeft") { 
-            e.preventDefault(); 
-            carrusel.scrollBy({ left: -paso, behavior: "smooth" }); 
-        } 
-        else if (e.key === "ArrowDown") { 
-            e.preventDefault(); 
-            modalContent.scrollBy({ top: 80, behavior: "smooth" }); 
-        } 
-        else if (e.key === "ArrowUp") { 
-            e.preventDefault(); 
-            modalContent.scrollBy({ top: -80, behavior: "smooth" }); 
-        } 
+        if (e.key === "ArrowRight") { e.preventDefault(); carrusel.scrollBy({ left: paso, behavior: "smooth" }); } 
+        else if (e.key === "ArrowLeft") { e.preventDefault(); carrusel.scrollBy({ left: -paso, behavior: "smooth" }); } 
+        else if (e.key === "ArrowDown") { e.preventDefault(); modalContent.scrollBy({ top: 100, behavior: "smooth" }); } 
+        else if (e.key === "ArrowUp") { e.preventDefault(); modalContent.scrollBy({ top: -100, behavior: "smooth" }); } 
         else if (e.key === "Enter") {
-            if (document.activeElement === carrusel || carrusel.contains(document.activeElement)) {
+            if (document.activeElement === carrusel) {
                 e.preventDefault();
                 const imgs = Array.from(carrusel.querySelectorAll("img"));
                 const scrollPos = carrusel.scrollLeft;
@@ -849,14 +815,7 @@ function agregarItem() {
     abrirCarrito();
 }
 
-function abrirCarrito() { 
-    document.getElementById("modalCarrito").style.display = "flex"; 
-    setTimeout(() => {
-        const cartContainer = document.getElementById("carritoContainer");
-        if (cartContainer) cartContainer.focus();
-    }, 100);
-}
-
+function abrirCarrito() { document.getElementById("modalCarrito").style.display = "flex"; }
 function cerrarCarrito() { document.getElementById("modalCarrito").style.display = "none"; }
 
 function cargarCarrito() {
