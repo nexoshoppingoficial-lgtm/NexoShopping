@@ -131,31 +131,33 @@
             align-items: center; justify-content: center; padding: 15px;
         }
 
-        .modal-content {
-            background: #ffffff; width: 90vw; max-width: 580px; max-height: 90vh;
-            border-radius: 4px; overflow-y: auto; position: relative; padding: 24px;
+        .modal-content, .carrito-container {
+            background: #ffffff; width: 90vw; max-width: 580px; max-height: 85vh;
+            border-radius: 6px; overflow-y: auto; position: relative; padding: 24px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.15); color: #4a4a4a; outline: none;
         }
 
-        /* BARRA DESLIZADORA VERTICAL TRASLÚCIDA Y SUTIL EN COMPUTADOR PARA LA VENTANA EMERGENTE */
+        .carrito-container { max-width: 440px; background: #faf6f0; border: 1px solid #f0e6d8; }
+
+        /* BARRAS DESLIZADORAS VERTICALES TRASLÚCIDAS Y SUTILES EN COMPUTADOR */
         @media (min-width: 1024px) {
-            .modal-content {
+            .modal-content, .carrito-container {
                 scrollbar-width: thin;
                 scrollbar-color: rgba(74, 63, 53, 0.25) transparent;
             }
-            .modal-content::-webkit-scrollbar {
+            .modal-content::-webkit-scrollbar, .carrito-container::-webkit-scrollbar {
                 display: block !important;
                 width: 5px !important;
             }
-            .modal-content::-webkit-scrollbar-track {
+            .modal-content::-webkit-scrollbar-track, .carrito-container::-webkit-scrollbar-track {
                 background: transparent !important;
             }
-            .modal-content::-webkit-scrollbar-thumb {
+            .modal-content::-webkit-scrollbar-thumb, .carrito-container::-webkit-scrollbar-thumb {
                 background: rgba(74, 63, 53, 0.25) !important;
                 border-radius: 10px !important;
                 backdrop-filter: blur(2px);
             }
-            .modal-content::-webkit-scrollbar-thumb:hover {
+            .modal-content::-webkit-scrollbar-thumb:hover, .carrito-container::-webkit-scrollbar-thumb:hover {
                 background: rgba(74, 63, 53, 0.45) !important;
             }
         }
@@ -233,13 +235,6 @@
         }
 
         /* Carrito */
-        .carrito-container { 
-            width: 100%; max-width: 440px; background: #faf6f0;
-            border: 1px solid #f0e6d8; border-radius: 6px; padding: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.12); position: relative;
-            max-height: 85vh; overflow-y: auto;
-        }
-
         .header-carrito { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid #e3d7cb; padding-bottom: 10px; }
         .header-carrito-txt { font-size: 14px; font-weight: 700; letter-spacing: 1.5px; color: #4a3f35; text-transform: uppercase; }
 
@@ -371,7 +366,7 @@
 
 <!-- MODAL CARRITO -->
 <div class="modal-carrito-overlay" id="modalCarrito">
-    <div class="carrito-container">
+    <div class="carrito-container" id="carritoContainer" tabindex="0">
         <button type="button" class="btn-cerrar-cart" onclick="cerrarCarrito()">✕</button>
         
         <div class="header-carrito">
@@ -668,7 +663,7 @@ function actualizarFlechas() {
 carrusel.addEventListener("scroll", actualizarFlechas);
 window.addEventListener("resize", actualizarFlechas);
 
-// --- TECLADO GLOBAL (FLECHAS ARRIBA/ABAJO MUEVEN VERTICALMENTE LA VENTANA EMERGENTE) ---
+// --- TECLADO GLOBAL (CONTROL EXCLUSIVO DE VENTANA EMERGENTE O CARRITO) ---
 document.addEventListener("keydown", (e) => {
     const modalProductoVisible = document.getElementById("modalProducto").style.display === "flex";
     const modalCarritoVisible = document.getElementById("modalCarrito").style.display === "flex";
@@ -676,12 +671,19 @@ document.addEventListener("keydown", (e) => {
 
     if (e.key === "Escape") {
         if (lightboxVisible) { cerrarZoom(); return; }
-        if (modalCarritoVisible) { 
-            cerrarCarrito(); 
-            if (modalProductoVisible) document.getElementById("modalContent").focus();
-            return; 
-        }
+        if (modalCarritoVisible) { cerrarCarrito(); return; }
         if (modalProductoVisible) { cerrarModal(); return; }
+    }
+
+    if (modalCarritoVisible && !lightboxVisible) {
+        const carritoContainer = document.getElementById("carritoContainer");
+        if (e.key === "ArrowDown") {
+            e.preventDefault();
+            carritoContainer.scrollBy({ top: 60, behavior: "smooth" });
+        } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            carritoContainer.scrollBy({ top: -60, behavior: "smooth" });
+        }
     }
 
     if (modalProductoVisible && !lightboxVisible && !modalCarritoVisible) {
@@ -847,7 +849,14 @@ function agregarItem() {
     abrirCarrito();
 }
 
-function abrirCarrito() { document.getElementById("modalCarrito").style.display = "flex"; }
+function abrirCarrito() { 
+    document.getElementById("modalCarrito").style.display = "flex"; 
+    setTimeout(() => {
+        const carritoContainer = document.getElementById("carritoContainer");
+        if (carritoContainer) carritoContainer.focus();
+    }, 100);
+}
+
 function cerrarCarrito() { document.getElementById("modalCarrito").style.display = "none"; }
 
 function cargarCarrito() {
