@@ -960,40 +960,25 @@ function actualizarFlechas() {
 carrusel.addEventListener("scroll", actualizarFlechas);
 window.addEventListener("resize", actualizarFlechas);
 
-document.addEventListener("keydown", (e) => {
-    const modalProductoVisible = document.getElementById("modalProducto").style.display === "flex";
-    const modalCarritoVisible = document.getElementById("modalCarrito").style.display === "flex";
-    const lightboxVisible = document.getElementById("lightboxZoom").style.display === "block";
-
-    if (e.key === "Escape") {
-        if (lightboxVisible) { cerrarZoom(); return; }
-        if (modalCarritoVisible) { 
-            cerrarCarrito(); 
-            if (modalProductoVisible) document.getElementById("modalContent").focus();
-            return; 
-        }
-        if (modalProductoVisible) { cerrarModal(); return; }
-    }
-
-    if (modalProductoVisible && !lightboxVisible && !modalCarritoVisible) {
-        const paso = carrusel.clientWidth;
+function abrirModal() {  
+    document.getElementById("modalProducto").style.display = "flex";  
+    requestAnimationFrame(() => {
+        const carrusel = document.getElementById("carruselImagenes");
         const modalContent = document.getElementById("modalContent");
-
-        if (e.key === "ArrowRight") { e.preventDefault(); carrusel.scrollBy({ left: paso, behavior: "smooth" }); } 
-        else if (e.key === "ArrowLeft") { e.preventDefault(); carrusel.scrollBy({ left: -paso, behavior: "smooth" }); } 
-        else if (e.key === "ArrowDown") { e.preventDefault(); modalContent.scrollBy({ top: 100, behavior: "smooth" }); } 
-        else if (e.key === "ArrowUp") { e.preventDefault(); modalContent.scrollBy({ top: -100, behavior: "smooth" }); } 
-        else if (e.key === "Enter") {
-            if (document.activeElement === carrusel) {
-                e.preventDefault();
-                const imgs = Array.from(carrusel.querySelectorAll("img"));
-                const scrollPos = carrusel.scrollLeft;
-                const index = Math.round(scrollPos / carrusel.clientWidth);
-                if (imgs[index]) abrirZoom(imgs[index].src);
-            }
+        
+        if (carrusel) {
+            carrusel.scrollLeft = 0;
         }
-    }
-});
+        
+        if (modalContent) {
+            modalContent.scrollTop = 0; // Esto asegura que arranque arriba sin importar la categoría
+            modalContent.focus(); // Mantiene el foco listo para las flechas del teclado
+        }
+        
+        actualizarFlechas();
+    });
+    setTimeout(actualizarFlechas, 100);
+}
 
 function habilitarSwipeCerrarModal(idContenedor, callbackCerrar, selectoresIgnorar = []) {
     const contenedor = document.getElementById(idContenedor);
