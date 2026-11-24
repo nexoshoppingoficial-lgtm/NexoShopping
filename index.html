@@ -36,20 +36,37 @@
             letter-spacing: 1px;
         }
         .catalogo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
             width: 100%;
             max-width: 100%;
             margin: 0 auto;
-            padding: 10px;
             box-sizing: border-box;
         }
+        /* DESLIZAMIENTO HORIZONTAL EN CELULAR */
+        @media (max-width: 599px) {
+            .catalogo-grid {
+                display: flex;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                overflow-y: hidden;
+                scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch;
+                gap: 12px;
+                padding: 8px 10px;
+            }
+            .catalogo-grid .card-atenea {
+                flex: 0 0 68%;
+                min-width: 195px;
+                max-width: 240px;
+                scroll-snap-align: start;
+            }
+        }
+        /* MÁRGENES DELGADOS ESTILO ATENEA EN COMPUTADOR */
         @media (min-width: 600px) {
             .catalogo-grid {
+                display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-                gap: 20px;
-                padding: 15px;
+                gap: 14px;
+                padding: 4px 6px;
             }
         }
         .card-atenea {
